@@ -19,7 +19,7 @@ public class UserService {
 
     public UserModel getUser(String userId) {
         return userRepository.findByUserId(userId)
-                .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "User with id: " + userId + " not found")
+                .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "유저를 찾을 수 없습니다.")
         );
     }
 }
