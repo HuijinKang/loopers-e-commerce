@@ -89,7 +89,7 @@ class PointV1ApiE2ETest {
         @Test
         void returnsBadRequest_whenXUserIdHeaderIsMissing() {
             // arrange
-            HttpHeaders headers = new HttpHeaders(); // No X-USER-ID header
+            HttpHeaders headers = new HttpHeaders();
             HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
             // act

@@ -13,14 +13,15 @@ import org.springframework.stereotype.Component;
 public class UserFacade {
     private final UserService userService;
 
-    public void createUser(UserV1Dto.UserRequest request) {
-        userService.createUser(request);
+    public UserInfo createUser(UserV1Dto.UserRequest request) {
+        UserModel user = userService.createUser(request);
+        return UserInfo.from(user);
     }
 
     public UserInfo getUser(String userId) {
-        UserModel model = userService.getUser(userId).orElseThrow(
-                () -> new CoreException(ErrorType.BAD_REQUEST, "유저를 찾을 수 없습니다.")
+        UserModel user = userService.getUser(userId).orElseThrow(
+                () -> new CoreException(ErrorType.NOT_FOUND, "유저를 찾을 수 없습니다.")
         );
-        return UserInfo.from(model);
+        return UserInfo.from(user);
     }
 }
