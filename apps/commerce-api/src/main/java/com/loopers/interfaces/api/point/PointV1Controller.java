@@ -29,11 +29,6 @@ public class PointV1Controller implements PointV1ApiSpec {
             @RequestHeader("X-USER-ID") String userId
     ) {
         PointInfo pointInfo = pointFacade.getPointInfo(userId);
-
-        if (pointInfo == null) {
-            return null;
-        }
-
         PointV1Dto.PointResponse response = PointV1Dto.PointResponse.from(pointInfo);
         return ApiResponse.success(response);
     }
