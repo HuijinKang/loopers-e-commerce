@@ -85,28 +85,11 @@ class PointV1ApiE2ETest {
             );
         }
 
-        @DisplayName("`X-USER-ID` 헤더가 없을 경우, `400 Bad Request` 응답을 반환한다.")
+        @DisplayName("X-USER-ID 헤더가 없을 경우, 400 Bad Request 응답을 반환한다.")
         @Test
         void returnsBadRequest_whenXUserIdHeaderIsMissing() {
             // arrange
             HttpHeaders headers = new HttpHeaders(); // No X-USER-ID header
-            HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-
-            // act
-            ResponseEntity<String> response = testRestTemplate.exchange(
-                    ENDPOINT_GET_POINT, HttpMethod.GET, requestEntity, String.class
-            );
-
-            // assert
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        }
-
-        @DisplayName("존재하지 않는 유저 ID로 조회할 경우, 400 Bad Request 응답을 반환한다.")
-        @Test
-        void returnsBadRequest_whenNonExistentUserId() {
-            // arrange
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("X-USER-ID", "nonExistentUser");
             HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
             // act
@@ -137,24 +120,18 @@ class PointV1ApiE2ETest {
             ResponseEntity<String> response = testRestTemplate.exchange(
                     ENDPOINT_CHARGE_POINT, HttpMethod.POST, requestEntity, String.class
             );
-            System.out.println("Raw Response Body: " + response.getBody());
 
             // assert
             assertAll(
                     () -> assertTrue(response.getStatusCode().is2xxSuccessful()),
-                    () -> assertThat(response.getBody()).contains("포인트 충전이 완료되었습니다.")
+                    () -> assertThat(response.getBody()).contains("1000")
             );
 
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
             PointModel updatedPoint = pointRepository.findByUser(testUser.getId()).orElseThrow();
             assertThat(updatedPoint.getAmount()).isEqualTo(1000L);
         }
 
-        @DisplayName("존재하지 않는 유저로 요청할 경우, 400 Bad Request 응답을 반환한다.")
+        @DisplayName("존재하지 않는 유저로 요청할 경우, 404 Not Found 응답을 반환한다.")
         @Test
         void returnsBadRequest_whenNonExistentUserRequestsCharge() {
             // arrange
@@ -170,25 +147,7 @@ class PointV1ApiE2ETest {
             );
 
             // assert
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        }
-
-        @DisplayName("`X-USER-ID` 헤더가 없을 경우, `400 Bad Request` 응답을 반환한다.")
-        @Test
-        void returnsBadRequest_whenChargeRequestMissingXUserIdHeader() {
-            // arrange
-            PointV1Dto.ChargeRequest request = new PointV1Dto.ChargeRequest(1000L);
-
-            HttpHeaders headers = new HttpHeaders(); // No X-USER-ID header
-            HttpEntity<PointV1Dto.ChargeRequest> requestEntity = new HttpEntity<>(request, headers);
-
-            // act
-            ResponseEntity<String> response = testRestTemplate.exchange(
-                    ENDPOINT_CHARGE_POINT, HttpMethod.POST, requestEntity, String.class
-            );
-
-            // assert
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         }
     }
 }

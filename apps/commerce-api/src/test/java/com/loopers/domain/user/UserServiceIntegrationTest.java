@@ -1,8 +1,6 @@
 package com.loopers.domain.user;
 
 import com.loopers.interfaces.api.user.UserV1Dto;
-import com.loopers.support.error.CoreException;
-import com.loopers.support.error.ErrorType;
 import com.loopers.utils.DatabaseCleanUp;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,9 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class UserServiceIntegrationTest {
@@ -75,27 +74,26 @@ class UserServiceIntegrationTest {
             userRepository.save(user);
 
             // act
-            UserModel result = userService.getUser("younghee123");
+            Optional<UserModel> result = userService.getUser("younghee123");
 
             // assert
-            assertAll(
-                    () -> assertThat(result.getUserId()).isEqualTo("younghee123"),
-                    () -> assertThat(result.getName()).isEqualTo("김영희"),
-                    () -> assertThat(result.getEmail()).isEqualTo("younghee@example.com")
-            );
+            assertThat(result).isPresent();
+            assertThat(result.get().getUserId()).isEqualTo("younghee123");
+            assertThat(result.get().getName()).isEqualTo("김영희");
+            assertThat(result.get().getEmail()).isEqualTo("younghee@example.com");
         }
 
-        @DisplayName("존재하지 않는 사용자 ID를 주면, NOT_FOUND 예외가 발생한다.")
+        @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, null 이 반환된다.")
         @Test
         void throwsNotFoundException_whenUserIdDoesNotExist() {
             // arrange
             String invalidId = "none";
 
             // act
-            CoreException exception = assertThrows(CoreException.class, () -> userService.getUser(invalidId));
+            Optional<UserModel> user = userService.getUser(invalidId);
 
             // assert
-            assertThat(exception.getErrorType()).isEqualTo(ErrorType.NOT_FOUND);
+            assertThat(user).isEqualTo(Optional.empty());
         }
     }
 }

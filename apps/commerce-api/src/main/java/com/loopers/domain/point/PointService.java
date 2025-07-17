@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class PointService {
@@ -16,14 +18,14 @@ public class PointService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void chargePoint(String userId, Long amount) {
+    public Long chargePoint(String userId, Long amount) {
 
         if (amount <= 0) {
             throw new CoreException(ErrorType.BAD_REQUEST, "충전 금액은 0보다 커야 합니다.");
         }
 
         UserModel user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new CoreException(ErrorType.BAD_REQUEST, "유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "유저를 찾을 수 없습니다."));
 
         PointModel point = pointRepository.findByUser(user.getId())
                 .orElseGet(() -> {
@@ -33,16 +35,12 @@ public class PointService {
                 });
 
         point.charge(amount);
+
+        return point.getAmount();
     }
 
     @Transactional(readOnly = true)
-    public PointModel getPoint(String userId) {
-
-        UserModel user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new CoreException(ErrorType.BAD_REQUEST, "유저를 찾을 수 없습니다."));
-        PointModel point = pointRepository.findByUser(user.getId())
-                .orElseThrow(() -> new CoreException(ErrorType.BAD_REQUEST, "포인트 정보를 찾을 수 없습니다."));
-
-        return point;
+    public Optional<PointModel> getPoint(Long userId) {
+        return pointRepository.findByUser(userId);
     }
 }

@@ -19,8 +19,8 @@ public class PointV1Controller implements PointV1ApiSpec {
             @RequestHeader("X-USER-ID") String userId,
             @RequestBody PointV1Dto.ChargeRequest request
     ) {
-        pointFacade.chargePoint(userId, request);
-        return ApiResponse.success("포인트 충전이 완료되었습니다.");
+        Long amount = pointFacade.chargePoint(userId, request);
+        return ApiResponse.success(amount);
     }
 
     @Override
@@ -28,7 +28,12 @@ public class PointV1Controller implements PointV1ApiSpec {
     public ApiResponse<PointV1Dto.PointResponse> getPoint(
             @RequestHeader("X-USER-ID") String userId
     ) {
-        PointInfo pointInfo = pointFacade.getPoint(userId);
+        PointInfo pointInfo = pointFacade.getPointInfo(userId);
+
+        if (pointInfo == null) {
+            return null;
+        }
+
         PointV1Dto.PointResponse response = PointV1Dto.PointResponse.from(pointInfo);
         return ApiResponse.success(response);
     }
