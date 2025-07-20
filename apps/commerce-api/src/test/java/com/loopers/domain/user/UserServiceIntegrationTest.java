@@ -1,5 +1,6 @@
 package com.loopers.domain.user;
 
+import com.loopers.application.user.UserFacade;
 import com.loopers.interfaces.api.user.UserV1Dto;
 import com.loopers.support.error.CoreException;
 import com.loopers.utils.DatabaseCleanUp;
@@ -21,6 +22,9 @@ import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 class UserServiceIntegrationTest {
+
+    @Autowired
+    private UserFacade userFacade;
 
     @Autowired
     private UserService userService;
@@ -73,7 +77,7 @@ class UserServiceIntegrationTest {
                     "2000-01-01",
                     "chulsoo@example.com"
             );
-            userService.createUser(request1);
+            userFacade.createUser(request1);
 
             UserV1Dto.UserRequest request2 = new UserV1Dto.UserRequest(
                     "chulsoo123",
@@ -86,7 +90,7 @@ class UserServiceIntegrationTest {
             // act & assert
             CoreException exception = assertThrows(
                     CoreException.class,
-                    () -> userService.createUser(request2)
+                    () -> userFacade.createUser(request2)
             );
 
             assertThat(exception.getErrorType().getStatus()).isEqualTo(org.springframework.http.HttpStatus.CONFLICT);

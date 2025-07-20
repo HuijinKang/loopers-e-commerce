@@ -14,6 +14,11 @@ public class UserFacade {
     private final UserService userService;
 
     public UserInfo createUser(UserV1Dto.UserRequest request) {
+        userService.getUser(request.userId()).ifPresent(
+                user -> {
+                    throw new CoreException(ErrorType.CONFLICT, "이미 가입된 사용자입니다.");
+                }
+        );
         UserModel user = userService.createUser(request);
         return UserInfo.from(user);
     }

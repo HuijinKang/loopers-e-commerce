@@ -1,6 +1,8 @@
 package com.loopers.domain.point;
 
 import com.loopers.domain.user.UserModel;
+import com.loopers.support.error.CoreException;
+import com.loopers.support.error.ErrorType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -32,6 +34,10 @@ public class PointModel {
     }
 
     public void charge(Long amount) {
+        if (amount <= 0) {
+            throw new CoreException(ErrorType.BAD_REQUEST, "충전 금액은 0보다 커야 합니다.");
+        }
+
         this.amount += amount;
     }
 }

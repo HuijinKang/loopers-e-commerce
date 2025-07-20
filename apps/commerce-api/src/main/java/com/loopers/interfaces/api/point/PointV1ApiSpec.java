@@ -12,7 +12,7 @@ public interface PointV1ApiSpec {
             summary = "포인트 충전",
             description = "포인트를 충전합니다."
     )
-    ApiResponse<Object> chargePoint(
+    ApiResponse<PointV1Dto.ChargeResponse> chargePoint(
             @Schema(name = "User ID", description = "조회할 회원의 ID")
             String userId,
             @Schema(name = "request", description = "포인트 충전 Request DTO")

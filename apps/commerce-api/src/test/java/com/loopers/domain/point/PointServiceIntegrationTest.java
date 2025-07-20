@@ -1,7 +1,9 @@
 package com.loopers.domain.point;
 
+import com.loopers.application.point.PointFacade;
 import com.loopers.domain.user.UserModel;
 import com.loopers.domain.user.UserRepository;
+import com.loopers.interfaces.api.point.PointV1Dto;
 import com.loopers.support.error.CoreException;
 import com.loopers.utils.DatabaseCleanUp;
 import org.junit.jupiter.api.AfterEach;
@@ -18,6 +20,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class PointServiceIntegrationTest {
+
+    @Autowired
+    private PointFacade pointFacade;
 
     @Autowired
     private PointService pointService;
@@ -84,7 +89,7 @@ class PointServiceIntegrationTest {
             String invalidId = "none";
 
             // act & assert
-            assertThrows(CoreException.class, () -> pointService.chargePoint(invalidId, 1000L));
+            assertThrows(CoreException.class, () -> pointFacade.chargePoint(invalidId, new PointV1Dto.ChargeRequest(1000L)));
         }
     }
 }

@@ -15,12 +15,12 @@ public class PointV1Controller implements PointV1ApiSpec {
 
     @Override
     @PostMapping("/charge")
-    public ApiResponse<Object> chargePoint(
+    public ApiResponse<PointV1Dto.ChargeResponse> chargePoint(
             @RequestHeader("X-USER-ID") String userId,
             @RequestBody PointV1Dto.ChargeRequest request
     ) {
-        Long amount = pointFacade.chargePoint(userId, request);
-        return ApiResponse.success(amount);
+        PointV1Dto.ChargeResponse response = pointFacade.chargePoint(userId, request);
+        return ApiResponse.success(response);
     }
 
     @Override
