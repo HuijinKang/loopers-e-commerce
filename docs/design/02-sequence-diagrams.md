@@ -261,21 +261,21 @@ sequenceDiagram
 sequenceDiagram
     participant User
     participant Client
-    participant API Server
+    participant API_Server as API Server
     participant DB 
 
     User->>Client: 주문 내역 조회 요청
-    Client->>API: GET /orders
+    Client->>API_Server: GET /orders
 
-    API->>DB: 사용자 주문 목록 조회
+    API_Server->>DB: 사용자 주문 목록 조회
 
     alt 주문 내역이 존재함
-        DB-->>API: 주문 목록 반환
-        API-->>Client: 200 OK + 주문 목록
+        DB-->>API_Server: 주문 목록 반환
+        API_Server-->>Client: 200 OK + 주문 목록
         Client-->>User: 최신순 주문 내역 표시
     else 주문 내역이 없음
-        DB-->>API: 빈 리스트 반환
-        API-->>Client: 200 OK + 빈 배열
+        DB-->>API_Server: 빈 리스트 반환
+        API_Server-->>Client: 200 OK + 빈 배열
         Client-->>User: "주문 내역이 없습니다" 안내 문구 표시
     end
 
