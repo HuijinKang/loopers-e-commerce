@@ -18,11 +18,11 @@ public class UserModel extends BaseEntity {
     @Column(name = "user_id", unique = true)
     private String userId;
     private String name;
-    private String gender;
+    private Gender gender;
     private LocalDate birth;
     private String email;
 
-    public UserModel(String userId, String name, String gender, String birth, String email) {
+    public UserModel(String userId, String name, Gender gender, String birth, String email) {
         this.userId = UserValidator.validateUserId(userId);
         this.name = UserValidator.validateName(name);
         this.gender = UserValidator.validateGender(gender);

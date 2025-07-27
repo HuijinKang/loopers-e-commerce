@@ -54,7 +54,7 @@ class UserServiceIntegrationTest {
             UserV1Dto.UserRequest request = new UserV1Dto.UserRequest(
                     "chulsoo123",
                     "김철수",
-                    "M",
+                    Gender.MALE,
                     "2000-01-01",
                     "chulsoo@example.com"
             );
@@ -73,7 +73,7 @@ class UserServiceIntegrationTest {
             UserV1Dto.UserRequest request1 = new UserV1Dto.UserRequest(
                     "chulsoo123",
                     "김철수",
-                    "M",
+                    Gender.MALE,
                     "2000-01-01",
                     "chulsoo@example.com"
             );
@@ -82,7 +82,7 @@ class UserServiceIntegrationTest {
             UserV1Dto.UserRequest request2 = new UserV1Dto.UserRequest(
                     "chulsoo123",
                     "홍길동",
-                    "M",
+                    Gender.MALE,
                     "1995-05-05",
                     "hong@example.com"
             );
@@ -109,13 +109,13 @@ class UserServiceIntegrationTest {
             UserV1Dto.UserRequest request = new UserV1Dto.UserRequest(
                     "huijin123",
                     "희진",
-                    "M",
+                    Gender.MALE,
                     "1999-01-01",
                     "huijin123@example.com"
             );
             userService.createUser(request);
             // act
-            Optional<UserModel> result = userService.getUser("huijin123");
+            Optional<UserModel> result = userService.findUser("huijin123");
 
             // assert
             assertThat(result).isPresent();
@@ -131,7 +131,7 @@ class UserServiceIntegrationTest {
             String invalidId = "none";
 
             // act
-            Optional<UserModel> user = userService.getUser(invalidId);
+            Optional<UserModel> user = userService.findUser(invalidId);
 
             // assert
             assertThat(user).isEqualTo(Optional.empty());

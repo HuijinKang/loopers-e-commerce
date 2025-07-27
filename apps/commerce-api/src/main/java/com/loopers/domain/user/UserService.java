@@ -15,14 +15,12 @@ public class UserService {
 
     @Transactional
     public UserModel createUser(UserV1Dto.UserRequest request) {
-
         UserModel user = UserModel.from(request);
-
         return userRepository.save(user);
     }
 
     @Transactional(readOnly = true)
-    public Optional<UserModel> getUser(String userId) {
+    public Optional<UserModel> findUser(String userId) {
         return userRepository.findByUserId(userId);
     }
 }

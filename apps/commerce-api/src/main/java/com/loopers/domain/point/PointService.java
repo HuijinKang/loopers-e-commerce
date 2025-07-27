@@ -19,8 +19,7 @@ public class PointService {
         PointModel point = pointRepository.findByUser(user.getId())
                 .orElseGet(() -> {
                     PointModel newPoint = PointModel.of(user, 0L);
-                    pointRepository.save(newPoint);
-                    return newPoint;
+                    return pointRepository.save(newPoint);
                 });
 
         point.charge(amount);
@@ -29,7 +28,7 @@ public class PointService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<PointModel> getPoint(Long userId) {
+    public Optional<PointModel> findPoint(Long userId) {
         return pointRepository.findByUser(userId);
     }
 }

@@ -1,5 +1,6 @@
 package com.loopers.application.user;
 
+import com.loopers.domain.user.Gender;
 import com.loopers.domain.user.UserModel;
 
 import java.time.LocalDate;
@@ -7,7 +8,7 @@ import java.time.LocalDate;
 public record UserInfo (
         String userId,
         String name,
-        String gender,
+        Gender gender,
         LocalDate birth,
         String email
 ) {

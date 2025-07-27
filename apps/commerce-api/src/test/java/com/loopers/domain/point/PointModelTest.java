@@ -1,5 +1,6 @@
 package com.loopers.domain.point;
 
+import com.loopers.domain.user.Gender;
 import com.loopers.domain.user.UserModel;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
@@ -23,7 +24,7 @@ class PointModelTest {
         @Test
         void failsWhenChargingWithZeroOrLessAmount() {
             // arrange
-            UserModel user = new UserModel("chulsoo123", "김철수", "M", "2000-01-01", "chulsoo@example.com");
+            UserModel user = new UserModel("chulsoo123", "김철수", Gender.MALE, "2000-01-01", "chulsoo@example.com");
             PointModel point = new PointModel(user, 1000L);
 
             // act & assert

@@ -1,7 +1,6 @@
 package com.loopers.interfaces.api.point;
 
 import com.loopers.application.point.PointInfo;
-import com.loopers.domain.point.PointModel;
 
 public class PointV1Dto {
 
@@ -13,9 +12,9 @@ public class PointV1Dto {
     public record ChargeResponse(
             Long amount
     ) {
-        public static ChargeResponse from(PointModel model) {
+        public static ChargeResponse from(PointInfo pointInfo) {
             return new ChargeResponse(
-                    model.getAmount()
+                    pointInfo.amount()
             );
         }
     }

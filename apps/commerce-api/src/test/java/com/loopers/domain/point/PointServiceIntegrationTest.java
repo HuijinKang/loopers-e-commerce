@@ -1,6 +1,7 @@
 package com.loopers.domain.point;
 
 import com.loopers.application.point.PointFacade;
+import com.loopers.domain.user.Gender;
 import com.loopers.domain.user.UserModel;
 import com.loopers.domain.user.UserRepository;
 import com.loopers.interfaces.api.point.PointV1Dto;
@@ -49,14 +50,14 @@ class PointServiceIntegrationTest {
         @Test
         void returnsPoint_whenUserExists() {
             // arrange
-            UserModel user = new UserModel("chulsoo123", "김철수", "M", "2000-01-01", "chulsoo@example.com");
+            UserModel user = new UserModel("chulsoo123", "김철수", Gender.MALE, "2000-01-01", "chulsoo@example.com");
             userRepository.save(user);
             UserModel savedUser = userRepository.findByUserId("chulsoo123").orElseThrow();
             PointModel point = PointModel.of(savedUser, 500L);
             pointRepository.save(point);
 
             // act
-            Optional<PointModel> result = pointService.getPoint(savedUser.getId());
+            Optional<PointModel> result = pointService.findPoint(savedUser.getId());
 
             // assert
             assertThat(result).isPresent();
@@ -71,7 +72,7 @@ class PointServiceIntegrationTest {
             Long invalidId = 999L; // 존재하지 않는 ID
 
             // act
-            Optional<PointModel> result = pointService.getPoint(invalidId);
+            Optional<PointModel> result = pointService.findPoint(invalidId);
 
             // assert
             assertThat(result).isEqualTo(Optional.empty());

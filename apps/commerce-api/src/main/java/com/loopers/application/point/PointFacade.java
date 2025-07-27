@@ -17,20 +17,20 @@ public class PointFacade {
     private final PointService pointService;
     private final UserService userService;
 
-    public PointV1Dto.ChargeResponse chargePoint(String userId, PointV1Dto.ChargeRequest request) {
-        UserModel user = userService.getUser(userId).orElseThrow(
+    public PointInfo chargePoint(String userId, PointV1Dto.ChargeRequest request) {
+        UserModel user = userService.findUser(userId).orElseThrow(
                 () -> new CoreException(ErrorType.NOT_FOUND, "유저를 찾을 수 없습니다.")
         );
         PointModel point = pointService.chargePoint(user, request.amount());
 
-        return PointV1Dto.ChargeResponse.from(point);
+        return PointInfo.from(point);
     }
 
     public PointInfo getPointInfo(String userId) {
-        UserModel user = userService.getUser(userId).orElseThrow(
+        UserModel user = userService.findUser(userId).orElseThrow(
                 () -> new CoreException(ErrorType.NOT_FOUND, "유저를 찾을 수 없습니다.")
         );
-        PointModel point = pointService.getPoint(user.getId()).orElseThrow(
+        PointModel point = pointService.findPoint(user.getId()).orElseThrow(
                 () -> new CoreException(ErrorType.NOT_FOUND, "포인트 정보를 찾을 수 없습니다.")
         );
         return PointInfo.from(point);

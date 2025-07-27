@@ -2,6 +2,7 @@ package com.loopers.interfaces.api.point;
 
 import com.loopers.domain.point.PointModel;
 import com.loopers.domain.point.PointRepository;
+import com.loopers.domain.user.Gender;
 import com.loopers.domain.user.UserModel;
 import com.loopers.domain.user.UserRepository;
 import com.loopers.interfaces.api.ApiResponse;
@@ -47,7 +48,7 @@ class PointV1ApiE2ETest {
 
     @BeforeEach
     void setUp() {
-        UserModel newUser = new UserModel("testUser", "Test Name", "M", "2000-01-01", "test@example.com");
+        UserModel newUser = new UserModel("testUser", "Test Name", Gender.MALE, "2000-01-01", "test@example.com");
         userRepository.save(newUser);
         testUser = userRepository.findByUserId(newUser.getUserId()).orElseThrow();
     }

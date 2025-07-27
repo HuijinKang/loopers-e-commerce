@@ -21,8 +21,8 @@ public class UserValidator {
         return name;
     }
 
-    public static String validateGender(String gender) {
-        if (gender == null || gender.isBlank())
+    public static Gender validateGender(Gender gender) {
+        if (gender == null)
             throw new CoreException(ErrorType.BAD_REQUEST, "성별은 비어있을 수 없습니다.");
         return gender;
     }

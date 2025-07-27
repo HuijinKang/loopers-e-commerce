@@ -1,6 +1,7 @@
 package com.loopers.interfaces.api.user;
 
 import com.loopers.application.user.UserInfo;
+import com.loopers.domain.user.Gender;
 
 import java.time.LocalDate;
 
@@ -9,7 +10,7 @@ public class UserV1Dto {
     public record UserRequest (
             String userId,
             String name,
-            String gender,
+            Gender gender,
             String birth,
             String email
     ) {
@@ -18,7 +19,7 @@ public class UserV1Dto {
     public record UserResponse (
             String userId,
             String name,
-            String gender,
+            Gender gender,
             LocalDate birth,
             String email
     ) {

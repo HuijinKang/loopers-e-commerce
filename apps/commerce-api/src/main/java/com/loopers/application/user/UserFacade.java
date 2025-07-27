@@ -14,7 +14,7 @@ public class UserFacade {
     private final UserService userService;
 
     public UserInfo createUser(UserV1Dto.UserRequest request) {
-        userService.getUser(request.userId()).ifPresent(
+        userService.findUser(request.userId()).ifPresent(
                 user -> {
                     throw new CoreException(ErrorType.CONFLICT, "이미 가입된 사용자입니다.");
                 }
@@ -24,7 +24,7 @@ public class UserFacade {
     }
 
     public UserInfo getUser(String userId) {
-        UserModel user = userService.getUser(userId).orElseThrow(
+        UserModel user = userService.findUser(userId).orElseThrow(
                 () -> new CoreException(ErrorType.NOT_FOUND, "유저를 찾을 수 없습니다.")
         );
         return UserInfo.from(user);

@@ -1,5 +1,6 @@
 package com.loopers.interfaces.api.user;
 
+import com.loopers.domain.user.Gender;
 import com.loopers.domain.user.UserModel;
 import com.loopers.infrastructure.user.UserJpaRepository;
 import com.loopers.interfaces.api.ApiResponse;
@@ -54,7 +55,7 @@ class UserV1ApiE2ETest {
             UserV1Dto.UserRequest request = new UserV1Dto.UserRequest(
                     "huijin123",
                     "희진",
-                    "M",
+                    Gender.MALE,
                     "1999-01-01",
                     "huijin123@example.com"
             );
@@ -75,7 +76,7 @@ class UserV1ApiE2ETest {
                     () -> assertThat(response.getBody()).isNotNull(),
                     () -> assertThat(response.getBody().data().userId()).isEqualTo("huijin123"),
                     () -> assertThat(response.getBody().data().name()).isEqualTo("희진"),
-                    () -> assertThat(response.getBody().data().gender()).isEqualTo("M"),
+                    () -> assertThat(response.getBody().data().gender()).isEqualTo(Gender.MALE),
                     () -> assertThat(response.getBody().data().birth()).isEqualTo("1999-01-01"),
                     () -> assertThat(response.getBody().data().email()).isEqualTo("huijin123@example.com")
             );
@@ -120,7 +121,7 @@ class UserV1ApiE2ETest {
             UserModel user = new UserModel(
                     "huijin123",
                     "희진",
-                    "M",
+                    Gender.MALE,
                     "1999-01-01",
                     "huijin123@example.com"
             );
@@ -147,7 +148,7 @@ class UserV1ApiE2ETest {
                     () -> assertThat(response.getBody().data().userId()).isEqualTo("huijin123"),
                     () -> assertThat(response.getBody().data().email()).isEqualTo("huijin123@example.com"),
                     () -> assertThat(response.getBody().data().name()).isEqualTo("희진"),
-                    () -> assertThat(response.getBody().data().gender()).isEqualTo("M"),
+                    () -> assertThat(response.getBody().data().gender()).isEqualTo(Gender.MALE),
                     () -> assertThat(response.getBody().data().birth()).isEqualTo("1999-01-01")
             );
         }

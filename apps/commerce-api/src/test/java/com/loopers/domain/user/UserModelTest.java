@@ -29,7 +29,7 @@ class UserModelTest {
         void throwsBadRequestException_whenUserIdFormatIsInvalid(String userId) {
             // when & then
             CoreException ex = assertThrows(CoreException.class,
-                    () -> new UserModel(userId, "강희진", "F", "2000-01-01", "hj@example.com"));
+                    () -> new UserModel(userId, "강희진", Gender.MALE, "2000-01-01", "hj@example.com"));
             assertThat(ex.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
         }
 
@@ -38,7 +38,7 @@ class UserModelTest {
         void throwsBadRequestException_whenEmailFormatIsInvalid() {
             // arrange & act & assert
             CoreException exception = assertThrows(CoreException.class,
-                    () -> new UserModel("chulsoo123", "김철수", "M", "2000-01-01", "invalid-email")); // 잘못된 이메일 형식
+                    () -> new UserModel("chulsoo123", "김철수", Gender.MALE, "2000-01-01", "invalid-email")); // 잘못된 이메일 형식
             assertThat(exception.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
         }
 
@@ -46,7 +46,7 @@ class UserModelTest {
         @Test
         void throwsBadRequestException_whenBirthFormatIsInvalid() {
             CoreException exception = assertThrows(CoreException.class,
-                    () -> new UserModel("chulsoo123", "김철수", "M", "01-01-2000", "chulsoo@example.com"));
+                    () -> new UserModel("chulsoo123", "김철수", Gender.MALE, "01-01-2000", "chulsoo@example.com"));
             assertThat(exception.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
         }
     }
