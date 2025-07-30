@@ -52,10 +52,6 @@ public class ProductModel extends BaseEntity {
         this.stock -= quantity;
     }
 
-    public boolean isAvailable() {
-        return this.status == ProductStatus.ON_SALE && this.stock > 0;
-    }
-
     public void increaseLikeCount() {
         this.likeCount++;
     }
@@ -64,6 +60,10 @@ public class ProductModel extends BaseEntity {
         if (this.likeCount > 0) {
             this.likeCount--;
         }
+    }
+
+    public boolean isAvailable() {
+        return this.status == ProductStatus.ON_SALE && this.stock > 0;
     }
 }
 

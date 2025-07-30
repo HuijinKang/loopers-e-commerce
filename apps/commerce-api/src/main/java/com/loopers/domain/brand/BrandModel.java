@@ -29,5 +29,4 @@ public class BrandModel extends BaseEntity {
     public void activate() {
         this.isActive = true;
     }
-
 }

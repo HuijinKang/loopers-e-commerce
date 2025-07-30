@@ -114,37 +114,6 @@ class ProductModelTest {
         }
     }
 
-    @DisplayName("상품의 판매 가능 여부는")
-    @Nested
-    class Availability {
-
-        @DisplayName("재고가 있고 상태가 ON_SALE이면 true이다")
-        @Test
-        void isAvailable_whenInStockAndOnSale() {
-            // arrange
-            ProductModel product = new ProductModel(brand, "상품", 1000L, 5);
-
-            // act
-            boolean available = product.isAvailable();
-
-            // assert
-            assertThat(available).isTrue();
-        }
-
-        @DisplayName("재고가 0이면 false이다")
-        @Test
-        void isNotAvailable_whenStockIsZero() {
-            // arrange
-            ProductModel product = new ProductModel(brand, "상품", 1000L, 0);
-
-            // act
-            boolean available = product.isAvailable();
-
-            // assert
-            assertThat(available).isFalse();
-        }
-    }
-
     @DisplayName("좋아요 기능은")
     @Nested
     class LikeCount {
@@ -187,6 +156,38 @@ class ProductModelTest {
 
             // assert
             assertThat(product.getLikeCount()).isEqualTo(0);
+        }
+    }
+
+
+    @DisplayName("상품의 판매 가능 여부는")
+    @Nested
+    class Availability {
+
+        @DisplayName("재고가 있고 상태가 ON_SALE이면 true이다")
+        @Test
+        void isAvailable_whenInStockAndOnSale() {
+            // arrange
+            ProductModel product = new ProductModel(brand, "상품", 1000L, 5);
+
+            // act
+            boolean available = product.isAvailable();
+
+            // assert
+            assertThat(available).isTrue();
+        }
+
+        @DisplayName("재고가 0이면 false이다")
+        @Test
+        void isNotAvailable_whenStockIsZero() {
+            // arrange
+            ProductModel product = new ProductModel(brand, "상품", 1000L, 0);
+
+            // act
+            boolean available = product.isAvailable();
+
+            // assert
+            assertThat(available).isFalse();
         }
     }
 }
