@@ -4,13 +4,12 @@
 classDiagram
 
 class Product {
-  +Long id
+  +Brand brand
   +String name
   +Long price
   +int stock
   +int likeCount
   +ProductStatus status
-  +Brand brand
 
   +increaseStock(int quantity) void
   +decreaseStock(int quantity) void
@@ -20,7 +19,6 @@ class Product {
 }
 
 class Option {
-  +Long id
   +String color
   +String size
   +int additionalPrice
@@ -31,7 +29,6 @@ class Option {
 }
 
 class Brand {
-  +Long id
   +String name
   +Boolean isActive
 
@@ -40,14 +37,12 @@ class Brand {
 }
 
 class Category {
-  +Long id
   +String name
 
   +updateName(String name) void
 }
 
 class ProductCategory {
-  +Long id
   +Product product
   +Category category
 
@@ -55,7 +50,6 @@ class ProductCategory {
 }
 
 class BrandCategory {
-  +Long id
   +Brand brand
   +Category category
 
@@ -63,7 +57,6 @@ class BrandCategory {
 }
 
 class Like {
-  +Long id
   +User user
   +Product product
   +LocalDateTime createdAt
@@ -72,7 +65,6 @@ class Like {
 }
 
 class Order {
-  +Long id
   +User user
   +LocalDateTime orderedAt
   +String shippingAddress
@@ -84,7 +76,6 @@ class Order {
 }
 
 class OrderItem {
-  +Long id
   +Order order
   +Product product
   +Option option
@@ -96,7 +87,6 @@ class OrderItem {
 }
 
 class User {
-  +Long id
   +String userId
   +String name
   +Gender gender
@@ -108,18 +98,37 @@ class User {
   +updateProfile(String name, Gender gender, LocalDate birth, String email) void
 }
 
-Option --> Product : product
+class BaseEntity {
+  +Long id
+  +ZonedDateTime createdAt
+  +ZonedDateTime updatedAt
+  +ZonedDateTime deletedAt
+  +delete() void
+  +restore() void
+  +guard() void
+}
 
+%% 상속 관계
+Product --|> BaseEntity
+Option --|> BaseEntity
+Brand --|> BaseEntity
+Category --|> BaseEntity
+ProductCategory --|> BaseEntity
+BrandCategory --|> BaseEntity
+Like --|> BaseEntity
+Order --|> BaseEntity
+OrderItem --|> BaseEntity
+User --|> BaseEntity
+
+%% 연관 관계
+Option --> Product : product
 Product --> Brand : brand
 ProductCategory --> Product : product
 ProductCategory --> Category : category
-
 BrandCategory --> Brand : brand
 BrandCategory --> Category : category
-
 Like --> User : user
 Like --> Product : product
-
 Order --> User : user
 OrderItem --> Order : order
 OrderItem --> Product : product
