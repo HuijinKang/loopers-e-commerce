@@ -1,5 +1,6 @@
 package com.loopers.domain.point;
 
+import com.loopers.domain.BaseEntity;
 import com.loopers.domain.user.UserModel;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
@@ -12,11 +13,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "points")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PointModel {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class PointModel extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
