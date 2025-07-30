@@ -6,17 +6,14 @@ classDiagram
 class Product {
   +Long id
   +String name
-  +String description
-  +int price
+  +Long price
   +int stock
-  +boolean available
+  +ProductStatus status
   +Brand brand
 
-  +addStock(int quantity) void
-  +removeStock(int quantity) void
-  +changePrice(int newPrice) void
-  +updateInfo(String name, String description, int price, int stock, boolean available) void
-  +isAvailable() boolean
+  +increaseStock(int quantity) void
+  +decreaseStock(int quantity) void
+  +isAvailable() void
 }
 
 class Option {
