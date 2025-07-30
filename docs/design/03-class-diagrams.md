@@ -8,12 +8,15 @@ class Product {
   +String name
   +Long price
   +int stock
+  +int likeCount
   +ProductStatus status
   +Brand brand
 
   +increaseStock(int quantity) void
   +decreaseStock(int quantity) void
-  +isAvailable() void
+  +increaseLikeCount() void
+  +decreaseLikeCount() void
+  +isAvailable() boolean
 }
 
 class Option {
@@ -30,10 +33,10 @@ class Option {
 class Brand {
   +Long id
   +String name
-  +String logoUrl
-  +String description
+  +Boolean isActive
 
-  +updateInfo(String name, String logoUrl, String description) void
+  +deactivate() void
+  +activate() void
 }
 
 class Category {
