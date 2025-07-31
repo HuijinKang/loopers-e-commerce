@@ -15,9 +15,10 @@ public class LikeRepositoryImpl implements LikeRepository {
 
     private final LikeJpaRepository likeJpaRepository;
 
+
     @Override
-    public Optional<LikeModel> findByUserAndProduct(UserModel user, ProductModel product) {
-        return likeJpaRepository.findByUserAndProduct(user, product);
+    public Optional<LikeModel> findByUserIdAndProductId(Long userId, Long productId) {
+        return likeJpaRepository.findByUserIdAndProductId(userId, productId);
     }
 
     @Override

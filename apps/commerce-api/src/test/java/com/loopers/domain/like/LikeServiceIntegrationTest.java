@@ -2,6 +2,7 @@ package com.loopers.domain.like;
 
 import com.loopers.application.like.LikeFacade;
 import com.loopers.domain.brand.BrandModel;
+import com.loopers.domain.brand.BrandRepository;
 import com.loopers.domain.product.ProductModel;
 import com.loopers.domain.product.ProductRepository;
 import com.loopers.domain.user.Gender;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -40,6 +42,9 @@ class LikeServiceIntegrationTest {
     private ProductRepository productRepository;
 
     @Autowired
+    private BrandRepository brandRepository;
+
+    @Autowired
     private DatabaseCleanUp databaseCleanUp;
 
     @AfterEach
@@ -52,20 +57,24 @@ class LikeServiceIntegrationTest {
     class ToggleLike {
 
         @DisplayName("처음 누르면 좋아요가 등록된다.")
+        @Transactional
         @Test
         void likeProduct_whenFirstClick() {
             // arrange
-            UserModel user = new UserModel("likeuser1", "홍길동", Gender.MALE, "2000-01-01", "user1@example.com");
-            userRepository.save(user);
+            UserModel user = userRepository.save(new UserModel(
+                    "likeuser1", "홍길동", Gender.MALE, "2000-01-01", "user1@example.com")
+            );
 
-            ProductModel product = new ProductModel(new BrandModel("나이키"), "에어맥스", 120000L, 10);
-            productRepository.save(product);
+            BrandModel brand = brandRepository.save(new BrandModel("아디다스"));
 
+            ProductModel product = productRepository.save(new ProductModel(brand, "에어맥스", 120000L, 10));
+
+            System.out.println("user: " + user.getId());
             // act
             likeDomainService.toggleLike(user, product);
 
             // assert
-            Optional<LikeModel> like = likeRepository.findByUserAndProduct(user, product);
+            Optional<LikeModel> like = likeRepository.findByUserIdAndProductId(user.getId(), product.getId());
             assertThat(like).isPresent();
             assertThat(product.getLikeCount()).isEqualTo(1);
         }
@@ -84,7 +93,7 @@ class LikeServiceIntegrationTest {
             likeDomainService.toggleLike(user, product); // 다시 클릭 -> 취소
 
             // act
-            Optional<LikeModel> like = likeRepository.findByUserAndProduct(user, product);
+            Optional<LikeModel> like = likeRepository.findByUserIdAndProductId(user.getId(), product.getId());
 
             // assert
             assertThat(like).isEmpty();

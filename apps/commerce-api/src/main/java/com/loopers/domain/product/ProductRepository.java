@@ -4,5 +4,5 @@ import java.util.Optional;
 
 public interface ProductRepository {
     Optional<ProductModel> findById(Long id);
-    void save(ProductModel product);
+    ProductModel save(ProductModel product);
 }

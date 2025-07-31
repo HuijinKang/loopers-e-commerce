@@ -10,7 +10,7 @@ import com.loopers.support.error.ErrorType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
+// import application 들어가면 안됨
 @Component
 @RequiredArgsConstructor
 public class LikeFacade {

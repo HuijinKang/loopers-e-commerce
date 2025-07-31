@@ -38,11 +38,11 @@ class LikeModelTest {
             );
 
             // act
-            LikeModel like = LikeModel.of(user, product);
+            LikeModel like = LikeModel.from(user.getId(), product.getId());
 
             // assert
-            assertThat(like.getUser()).isEqualTo(user);
-            assertThat(like.getProduct()).isEqualTo(product);
+            assertThat(like.getUserId()).isEqualTo(user.getId());
+            assertThat(like.getProductId()).isEqualTo(product.getId());
         }
     }
 }

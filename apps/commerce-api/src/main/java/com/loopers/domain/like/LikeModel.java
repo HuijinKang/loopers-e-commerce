@@ -2,7 +2,7 @@ package com.loopers.domain.like;
 
 import com.loopers.domain.BaseEntity;
 import com.loopers.domain.product.ProductModel;
-import com.loopers.domain.user.UserModel;
+import com.loopers.domain.user.UserModel; // 있으면 안됨, 예시로 추가된 import
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,20 +14,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LikeModel extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserModel user;
+    private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private ProductModel product;
+    private Long productId;
 
-    public LikeModel(UserModel user, ProductModel product) {
-        this.user = user;
-        this.product = product;
+    public LikeModel(Long userId, Long productId) {
+        this.userId = userId;
+        this.productId = productId;
     }
 
-    public static LikeModel of(UserModel user, ProductModel product) {
-        return new LikeModel(user, product);
+    public static LikeModel from(Long userId, Long productId) {
+        return new LikeModel(userId, productId);
     }
 }
