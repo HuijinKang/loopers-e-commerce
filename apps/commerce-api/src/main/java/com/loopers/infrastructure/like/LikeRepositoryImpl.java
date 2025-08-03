@@ -2,8 +2,6 @@ package com.loopers.infrastructure.like;
 
 import com.loopers.domain.like.LikeModel;
 import com.loopers.domain.like.LikeRepository;
-import com.loopers.domain.product.ProductModel;
-import com.loopers.domain.user.UserModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -22,8 +20,8 @@ public class LikeRepositoryImpl implements LikeRepository {
     }
 
     @Override
-    public boolean existsByUserAndProduct(UserModel user, ProductModel product) {
-        return likeJpaRepository.existsByUserAndProduct(user, product);
+    public boolean existsByUserIdAndProductId(Long userId, Long productId) {
+        return likeJpaRepository.existsByUserIdAndProductId(userId, productId);
     }
 
     @Override

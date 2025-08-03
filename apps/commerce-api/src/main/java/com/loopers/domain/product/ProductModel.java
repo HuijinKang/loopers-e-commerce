@@ -18,15 +18,10 @@ public class ProductModel extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id")
     private BrandModel brand;
-
     private String name;
-
     private Long price;
-
     private int stock;
-
     private int likeCount;
-
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
@@ -39,11 +34,6 @@ public class ProductModel extends BaseEntity {
         this.stock = stock;
         this.status = ProductStatus.ON_SALE;
         this.likeCount = 0;
-    }
-
-    public void increaseStock(int quantity) {
-        if (quantity <= 0) throw new CoreException(ErrorType.BAD_REQUEST, "추가 수량은 0보다 커야 합니다.");
-        this.stock += quantity;
     }
 
     public void decreaseStock(int quantity) {

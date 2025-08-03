@@ -27,9 +27,8 @@ public class LikeDomainService {
         }
     }
 
-
-    public boolean isLiked(UserModel user, ProductModel product) {
-        return likeRepository.existsByUserAndProduct(user, product);
+    public boolean isLiked(Long userId, Long productId) {
+        return likeRepository.existsByUserIdAndProductId(userId, productId);
     }
 }
 

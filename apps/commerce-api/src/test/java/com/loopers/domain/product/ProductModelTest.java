@@ -74,19 +74,6 @@ class ProductModelTest {
     @Nested
     class Stock {
 
-        @DisplayName("재고가 증가하면 기존 재고에 더해진다")
-        @Test
-        void increasesStock_whenValidQuantityGiven() {
-            // arrange
-            ProductModel product = new ProductModel(brand, "상품", 1000L, 10);
-
-            // act
-            product.increaseStock(5);
-
-            // assert
-            assertThat(product.getStock()).isEqualTo(15);
-        }
-
         @DisplayName("재고가 감소하면 기존 재고에서 차감된다")
         @Test
         void decreasesStock_whenSufficientQuantity() {

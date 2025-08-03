@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -57,7 +56,6 @@ class LikeServiceIntegrationTest {
     class ToggleLike {
 
         @DisplayName("처음 누르면 좋아요가 등록된다.")
-        @Transactional
         @Test
         void likeProduct_whenFirstClick() {
             // arrange
@@ -69,7 +67,6 @@ class LikeServiceIntegrationTest {
 
             ProductModel product = productRepository.save(new ProductModel(brand, "에어맥스", 120000L, 10));
 
-            System.out.println("user: " + user.getId());
             // act
             likeDomainService.toggleLike(user, product);
 
@@ -83,11 +80,13 @@ class LikeServiceIntegrationTest {
         @Test
         void unlikeProduct_whenClickedAgain() {
             // arrange
-            UserModel user = new UserModel("likeuser2", "김영희", Gender.FEMALE, "1998-03-15", "user2@example.com");
-            userRepository.save(user);
+            UserModel user = userRepository.save(new UserModel(
+                    "likeuser1", "홍길동", Gender.MALE, "2000-01-01", "user1@example.com")
+            );
 
-            ProductModel product = new ProductModel(new BrandModel("아디다스"), "슈퍼스타", 99000L, 5);
-            productRepository.save(product);
+            BrandModel brand = brandRepository.save(new BrandModel("아디다스"));
+
+            ProductModel product = productRepository.save(new ProductModel(brand, "에어맥스", 120000L, 10));
 
             likeDomainService.toggleLike(user, product); // 처음 좋아요
             likeDomainService.toggleLike(user, product); // 다시 클릭 -> 취소
@@ -104,15 +103,16 @@ class LikeServiceIntegrationTest {
         @Test
         void fails_whenUserNotFound() {
             // arrange
-            ProductModel product = new ProductModel(new BrandModel("뉴발란스"), "993", 139000L, 7);
-            productRepository.save(product);
+            BrandModel brand = brandRepository.save(new BrandModel("아디다스"));
+
+            ProductModel product = productRepository.save(new ProductModel(brand, "에어맥스", 120000L, 10));
 
             UserModel fakeUser = new UserModel("fake123", "가짜", Gender.MALE, "1990-01-01", "fake@example.com");
 
             // act & assert
-            assertThrows(CoreException.class, () -> {
-                likeFacade.toggleLike("fake123", product.getId());
-            });
+            assertThrows(CoreException.class,
+                    () -> likeFacade.toggleLike(fakeUser.getUserId(), product.getId())
+            );
         }
     }
 }

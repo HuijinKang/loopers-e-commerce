@@ -21,16 +21,16 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
-class UserServiceIntegrationTest {
+class UserDomainServiceIntegrationTest {
 
     @Autowired
     private UserFacade userFacade;
 
     @Autowired
-    private UserService userService;
+    private UserDomainService userDomainService;
 
     @InjectMocks
-    private UserService userService2;
+    private UserDomainService userDomainService2;
 
     @Spy
     private UserRepository userRepository;
@@ -60,7 +60,7 @@ class UserServiceIntegrationTest {
             );
 
             // act
-            userService2.createUser(request);
+            userDomainService2.createUser(request);
 
             // assert
             verify(userRepository).save(any(UserModel.class));
@@ -113,15 +113,15 @@ class UserServiceIntegrationTest {
                     "1999-01-01",
                     "huijin123@example.com"
             );
-            userService.createUser(request);
+            userDomainService.createUser(request);
+
             // act
-            Optional<UserModel> result = userService.findUser("huijin123");
+            UserModel result = userDomainService.getUser("huijin123");
 
             // assert
-            assertThat(result).isPresent();
-            assertThat(result.get().getUserId()).isEqualTo("huijin123");
-            assertThat(result.get().getName()).isEqualTo("희진");
-            assertThat(result.get().getEmail()).isEqualTo("huijin123@example.com");
+            assertThat(result.getUserId()).isEqualTo("huijin123");
+            assertThat(result.getName()).isEqualTo("희진");
+            assertThat(result.getEmail()).isEqualTo("huijin123@example.com");
         }
 
         @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, null 이 반환된다.")
@@ -131,10 +131,10 @@ class UserServiceIntegrationTest {
             String invalidId = "none";
 
             // act
-            Optional<UserModel> user = userService.findUser(invalidId);
+            UserModel user = userDomainService.getUser(invalidId);
 
             // assert
-            assertThat(user).isEqualTo(Optional.empty());
+            assertThat(user).isNull();
         }
     }
 }

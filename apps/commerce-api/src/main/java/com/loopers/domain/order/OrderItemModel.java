@@ -1,7 +1,6 @@
 package com.loopers.domain.order;
 
 import com.loopers.domain.BaseEntity;
-import com.loopers.domain.product.ProductModel;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,29 +15,26 @@ public class OrderItemModel extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private OrderModel order;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private ProductModel product;
-
+    private Long productId;
     @Embedded
     private Option option;
-
-    private Long quantity;
-
+    private int quantity;
     private Long price;
 
-    public OrderItemModel(OrderModel order, ProductModel product, Option option, Long quantity, Long price) {
+    public OrderItemModel(OrderModel order, Long productId, Option option, int quantity, Long price) {
         this.order = order;
-        this.product = product;
+        this.productId = productId;
         this.option = option;
         this.quantity = quantity;
         this.price = price;
     }
 
-    public static OrderItemModel of(OrderModel order, ProductModel product, Option option, Long quantity, Long price) {
-        return new OrderItemModel(order, product, option, quantity, price);
+    public static OrderItemModel of(OrderModel order, Long productId, Option option, int quantity, Long price) {
+        return new OrderItemModel(order, productId, option, quantity, price);
     }
 
-    // TODO: 도메인 로직
+    public Long calculatePrice() {
+        return price;
+    }
+
 }
