@@ -21,9 +21,12 @@ public class ProductDomainService {
                 () -> new CoreException(ErrorType.NOT_FOUND, "상품을 찾을 수 없습니다."));
     }
 
-    /**
-     * 상품 재고 차감
-     */
+    @Transactional(readOnly = true)
+    public List<ProductModel> getProducts(int page, int size, ProductSortType sortType, ProductStatus status) {
+        return productRepository.search(page, size, sortType, status);
+    }
+
+    @Transactional
     public void deductStock(List<OrderItemModel> orderItems) {
         for (OrderItemModel item : orderItems) {
             ProductModel product = productRepository.findById(item.getProductId())

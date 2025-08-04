@@ -1,7 +1,6 @@
 package com.loopers.domain.product;
 
 import com.loopers.domain.BaseEntity;
-import com.loopers.domain.brand.BrandModel;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 import jakarta.persistence.*;
@@ -15,20 +14,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductModel extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "brand_id")
-    private BrandModel brand;
+    private Long brandId;
+
     private String name;
+
     private Long price;
+
     private int stock;
+
     private int likeCount;
+
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
-    public ProductModel(BrandModel brand, String name, Long price, int stock) {
+    public ProductModel(Long brandId, String name, Long price, int stock) {
         if (price < 0) throw new CoreException(ErrorType.BAD_REQUEST, "가격은 0 이상이어야 합니다.");
         if (stock < 0) throw new CoreException(ErrorType.BAD_REQUEST, "재고는 0 이상이어야 합니다.");
-        this.brand = brand;
+        this.brandId = brandId;
         this.name = name;
         this.price = price;
         this.stock = stock;
