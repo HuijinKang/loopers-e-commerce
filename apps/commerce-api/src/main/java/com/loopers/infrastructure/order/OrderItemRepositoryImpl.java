@@ -5,6 +5,8 @@ import com.loopers.domain.order.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class OrderItemRepositoryImpl implements OrderItemRepository {
@@ -14,5 +16,10 @@ public class OrderItemRepositoryImpl implements OrderItemRepository {
     @Override
     public void save(OrderItemModel orderItem) {
         orderItemJpaRepository.save(orderItem);
+    }
+
+    @Override
+    public List<OrderItemModel> saveAll(List<OrderItemModel> orderItems) {
+        return orderItemJpaRepository.saveAll(orderItems);
     }
 }
