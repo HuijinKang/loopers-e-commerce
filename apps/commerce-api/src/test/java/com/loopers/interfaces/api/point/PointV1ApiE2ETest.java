@@ -66,7 +66,7 @@ class PointV1ApiE2ETest {
         @Test
         void returnsPoint_whenSuccessful() {
             // arrange
-            PointModel initialPoint = PointModel.of(testUser, 5000L);
+            PointModel initialPoint = PointModel.of(testUser.getId(), 5000L);
             pointRepository.save(initialPoint);
 
             HttpHeaders headers = new HttpHeaders();
@@ -128,7 +128,7 @@ class PointV1ApiE2ETest {
                     () -> assertThat(response.getBody()).contains("1000")
             );
 
-            PointModel updatedPoint = pointRepository.findByUser(testUser.getId()).orElseThrow();
+            PointModel updatedPoint = pointRepository.findByUserId(testUser.getId()).orElseThrow();
             assertThat(updatedPoint.getAmount()).isEqualTo(1000L);
         }
 

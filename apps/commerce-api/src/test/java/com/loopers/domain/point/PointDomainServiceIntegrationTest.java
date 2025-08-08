@@ -14,19 +14,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class PointServiceIntegrationTest {
+class PointDomainServiceIntegrationTest {
 
     @Autowired
     private PointFacade pointFacade;
 
     @Autowired
-    private PointService pointService;
+    private PointDomainService pointDomainService;
 
     @Autowired
     private UserRepository userRepository;
@@ -53,16 +51,14 @@ class PointServiceIntegrationTest {
             UserModel user = new UserModel("chulsoo123", "김철수", Gender.MALE, "2000-01-01", "chulsoo@example.com");
             userRepository.save(user);
             UserModel savedUser = userRepository.findByUserId("chulsoo123").orElseThrow();
-            PointModel point = PointModel.of(savedUser, 500L);
+            PointModel point = PointModel.of(savedUser.getId(), 500L);
             pointRepository.save(point);
 
             // act
-            Optional<PointModel> result = pointService.findPoint(savedUser.getId());
+            PointModel result = pointDomainService.getPoint(savedUser.getId());
 
-            // assert
-            assertThat(result).isPresent();
-            assertThat(result.get().getAmount()).isEqualTo(500L);
-            assertThat(result.get().getUser().getId()).isEqualTo(savedUser.getId());
+            // assert;
+            assertThat(result.getAmount()).isEqualTo(500L);
         }
 
         @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, null 이 반환된다.")
@@ -72,10 +68,10 @@ class PointServiceIntegrationTest {
             Long invalidId = 999L; // 존재하지 않는 ID
 
             // act
-            Optional<PointModel> result = pointService.findPoint(invalidId);
+            PointModel result = pointDomainService.getPoint(invalidId);
 
             // assert
-            assertThat(result).isEqualTo(Optional.empty());
+            assertThat(result).isNull();
         }
     }
 
