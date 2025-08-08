@@ -16,6 +16,8 @@ public class PointModel extends BaseEntity {
 
     private Long userId;
     private Long amount;
+    @Version
+    private Long version;
 
     public PointModel(Long userId, Long amount) {
         this.userId = userId;
@@ -34,7 +36,7 @@ public class PointModel extends BaseEntity {
         this.amount += amount;
     }
 
-    public void usePoint(Long amount) {
+    public void deduct(Long amount) {
         if (amount <= 0) {
             throw new CoreException(ErrorType.BAD_REQUEST, "사용 금액은 0보다 커야 합니다.");
         }
