@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "order_items")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItemModel extends BaseEntity {
@@ -15,10 +15,14 @@ public class OrderItemModel extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private OrderModel order;
+
     private Long productId;
+
     @Embedded
     private Option option;
+
     private int quantity;
+
     private Long price;
 
     public OrderItemModel(OrderModel order, Long productId, Option option, int quantity, Long price) {
@@ -33,8 +37,7 @@ public class OrderItemModel extends BaseEntity {
         return new OrderItemModel(order, productId, option, quantity, price);
     }
 
-    public Long calculatePrice() {
-        return price;
+    public long calculateTotalPrice() {
+        return price * quantity;
     }
-
 }

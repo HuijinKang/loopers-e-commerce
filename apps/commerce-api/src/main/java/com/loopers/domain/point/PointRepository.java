@@ -4,5 +4,6 @@ import java.util.Optional;
 
 public interface PointRepository {
     Optional<PointModel> findByUserId(Long userId);
+    Optional<PointModel> findByUserIdForUpdate(Long userId);
     PointModel save(PointModel point);
 }

@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class BrandModel extends BaseEntity {
 
     private String name;
+
     private Boolean isActive;
 
     public BrandModel(String name) {

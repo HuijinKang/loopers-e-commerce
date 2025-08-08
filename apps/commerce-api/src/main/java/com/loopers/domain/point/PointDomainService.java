@@ -27,12 +27,14 @@ public class PointDomainService {
         return point;
     }
 
+    @Transactional
     public void deductPoint(Long userId, Long amount) {
         PointModel point = pointRepository.findByUserId(userId)
                 .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "포인트 정보 없음"));
 
-        point.usePoint(amount);
+        point.deduct(amount);
     }
+
 
     @Transactional(readOnly = true)
     public PointModel getPoint(Long userId) {
