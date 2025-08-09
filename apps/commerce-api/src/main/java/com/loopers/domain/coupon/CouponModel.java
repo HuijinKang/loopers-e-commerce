@@ -34,7 +34,6 @@ public class CouponModel extends BaseEntity {
         this.type = type;
         this.amount = amount;
         this.percent = percent;
-        this.active = true;
     }
 
     public static CouponModel of(String code, String description, CouponType type, Long amount, Integer percent) {

@@ -4,6 +4,8 @@ import com.loopers.interfaces.api.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import java.util.List;
+
 @Tag(name = "좋아요", description = "좋아요 관련 API")
 public interface LikeV1Spec {
 
@@ -17,5 +19,5 @@ public interface LikeV1Spec {
     ApiResponse<Boolean> isLiked(String email, Long productId);
 
     @Operation(summary = "좋아요 목록 조회", description = "현재 사용자가 좋아요한 상품 ID 목록을 조회합니다.")
-    ApiResponse<java.util.List<Long>> getMyLikedProducts(String email);
+    ApiResponse<List<Long>> getMyLikedProducts(String email);
 }

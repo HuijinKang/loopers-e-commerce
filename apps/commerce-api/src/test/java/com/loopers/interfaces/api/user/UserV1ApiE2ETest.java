@@ -70,13 +70,16 @@ class UserV1ApiE2ETest {
             );
 
             // assert
+            ApiResponse<UserV1Dto.UserResponse> body = response.getBody();
+            assertThat(body).isNotNull();
+            UserV1Dto.UserResponse data = body.data();
+            assertThat(data).isNotNull();
             assertAll(
                     () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK),
-                    () -> assertThat(response.getBody()).isNotNull(),
-                    () -> assertThat(response.getBody().data().name()).isEqualTo("강희진"),
-                    () -> assertThat(response.getBody().data().gender()).isEqualTo(Gender.MALE),
-                    () -> assertThat(response.getBody().data().birth()).isEqualTo("2000-01-01"),
-                    () -> assertThat(response.getBody().data().email()).isEqualTo("huijin123@example.com")
+                    () -> assertThat(data.name()).isEqualTo("강희진"),
+                    () -> assertThat(data.gender()).isEqualTo(Gender.MALE),
+                    () -> assertThat(data.birth()).isEqualTo("2000-01-01"),
+                    () -> assertThat(data.email()).isEqualTo("huijin123@example.com")
             );
         }
 
@@ -138,13 +141,16 @@ class UserV1ApiE2ETest {
             );
 
             // assert
+            ApiResponse<UserV1Dto.UserResponse> body = response.getBody();
+            assertThat(body).isNotNull();
+            UserV1Dto.UserResponse data = body.data();
+            assertThat(data).isNotNull();
             assertAll(
                     () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK),
-                    () -> assertThat(response.getBody()).isNotNull(),
-                    () -> assertThat(response.getBody().data().email()).isEqualTo("huijin123@example.com"),
-                    () -> assertThat(response.getBody().data().name()).isEqualTo("강희진"),
-                    () -> assertThat(response.getBody().data().gender()).isEqualTo(Gender.MALE),
-                    () -> assertThat(response.getBody().data().birth()).isEqualTo("2000-01-01")
+                    () -> assertThat(data.email()).isEqualTo("huijin123@example.com"),
+                    () -> assertThat(data.name()).isEqualTo("강희진"),
+                    () -> assertThat(data.gender()).isEqualTo(Gender.MALE),
+                    () -> assertThat(data.birth()).isEqualTo("2000-01-01")
             );
         }
 

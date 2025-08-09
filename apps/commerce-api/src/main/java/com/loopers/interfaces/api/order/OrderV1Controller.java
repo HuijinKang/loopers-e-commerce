@@ -7,6 +7,7 @@ import com.loopers.application.order.OrderQueryFacade;
 import com.loopers.interfaces.api.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,15 +28,17 @@ public class OrderV1Controller implements OrderV1ApiSpec {
         return ApiResponse.success(orderId);
     }
 
+    @Override
     @GetMapping
-    public ApiResponse<java.util.List<OrderV1Dto.OrderResponse>> getOrders(
+    public ApiResponse<List<OrderV1Dto.OrderResponse>> getOrders(
             @RequestHeader("X-USER-ID") String email
     ) {
-        java.util.List<OrderV1Dto.OrderResponse> responses = orderQueryFacade.getOrders(email)
+        List<OrderV1Dto.OrderResponse> responses = orderQueryFacade.getOrders(email)
                 .stream().map(OrderV1Dto.OrderResponse::from).toList();
         return ApiResponse.success(responses);
     }
 
+    @Override
     @GetMapping("/{orderId}")
     public ApiResponse<OrderV1Dto.OrderResponse> getOrder(
             @RequestHeader("X-USER-ID") String email,

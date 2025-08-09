@@ -1,6 +1,7 @@
 package com.loopers.interfaces.api.user;
 
 import com.loopers.application.user.UserFacade;
+import com.loopers.application.user.UserQueryFacade;
 import com.loopers.application.user.UserInfo;
 import com.loopers.interfaces.api.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserV1Controller implements UserV1ApiSpec {
 
     private final UserFacade userFacade;
+    private final UserQueryFacade userQueryFacade;
 
     @Override
     @PostMapping
@@ -28,7 +30,7 @@ public class UserV1Controller implements UserV1ApiSpec {
     public ApiResponse<UserV1Dto.UserResponse> getUser(
             @RequestHeader("X-USER-ID") String email
     ) {
-        UserInfo userInfo = userFacade.getUser(email);
+        UserInfo userInfo = userQueryFacade.getUser(email);
         UserV1Dto.UserResponse response = UserV1Dto.UserResponse.from(userInfo);
         return ApiResponse.success(response);
     }

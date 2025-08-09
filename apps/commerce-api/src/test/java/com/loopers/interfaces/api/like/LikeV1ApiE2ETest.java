@@ -19,6 +19,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -113,7 +115,7 @@ class LikeV1ApiE2ETest {
             restTemplate.exchange(ENDPOINT + "/" + p2.getId(), HttpMethod.POST, new HttpEntity<>(headers), new ParameterizedTypeReference<ApiResponse<Void>>() {});
 
             // act
-            ResponseEntity<ApiResponse<java.util.List<Long>>> res = restTemplate.exchange(
+            ResponseEntity<ApiResponse<List<Long>>> res = restTemplate.exchange(
                     ENDPOINT + "/list", HttpMethod.GET, new HttpEntity<>(headers), new ParameterizedTypeReference<>() {}
             );
 

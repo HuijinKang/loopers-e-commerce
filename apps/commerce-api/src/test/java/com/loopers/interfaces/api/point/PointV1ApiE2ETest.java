@@ -80,9 +80,13 @@ class PointV1ApiE2ETest {
             );
 
             // assert
+            ApiResponse<PointV1Dto.PointResponse> body = response.getBody();
+            assertThat(body).isNotNull();
+            PointV1Dto.PointResponse data = body.data();
+            assertThat(data).isNotNull();
             assertAll(
                     () -> assertTrue(response.getStatusCode().is2xxSuccessful()),
-                    () -> assertThat(response.getBody().data().amount()).isEqualTo(5000L)
+                    () -> assertThat(data.amount()).isEqualTo(5000L)
             );
         }
 

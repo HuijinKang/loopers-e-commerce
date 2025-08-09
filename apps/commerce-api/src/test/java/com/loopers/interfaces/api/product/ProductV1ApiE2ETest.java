@@ -6,7 +6,6 @@ import com.loopers.domain.brand.BrandRepository;
 import com.loopers.domain.product.ProductModel;
 import com.loopers.domain.product.ProductRepository;
 import com.loopers.domain.product.ProductSortType;
-import com.loopers.domain.user.Gender;
 import com.loopers.domain.user.UserModel;
 import com.loopers.infrastructure.user.UserJpaRepository;
 import com.loopers.interfaces.api.ApiResponse;
@@ -115,10 +114,10 @@ class ProductV1ApiE2ETest {
         @DisplayName("가격 오름차순 정렬로 상품 목록을 반환한다")
         void returnsPriceAsc() {
             // arrange
-            BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-            ProductModel p1 = productRepository.save(ProductModel.of(brand.getId(), "A", 3000L, 10));
-            ProductModel p2 = productRepository.save(ProductModel.of(brand.getId(), "B", 1000L, 10));
-            ProductModel p3 = productRepository.save(ProductModel.of(brand.getId(), "C", 2000L, 10));
+            Long brandId = brandRepository.save(BrandModel.of("브랜드")).getId();
+            productRepository.save(ProductModel.of(brandId, "A", 3000L, 10));
+            productRepository.save(ProductModel.of(brandId, "B", 1000L, 10));
+            productRepository.save(ProductModel.of(brandId, "C", 2000L, 10));
 
             ParameterizedTypeReference<ApiResponse<List<ProductV1Dto.ProductSummaryResponse>>> type = new ParameterizedTypeReference<>() {};
 

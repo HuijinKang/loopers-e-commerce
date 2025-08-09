@@ -58,7 +58,6 @@ class IssuedCouponDomainServiceIntegrationTest {
             CouponModel coupon = couponRepository.save(CouponModel.ofFixed("FIX-1000", "fixed 1000", 1000L));
 
             IssuedCouponModel issued = issuedCouponRepository.save(IssuedCouponModel.of(coupon, owner.getId(), IssuedCouponStatus.ISSUED));
-            IssuedCouponModel loaded = issuedCouponRepository.findById(issued.getId()).orElseThrow();
 
             // act & assert
             CoreException ex = assertThrows(CoreException.class, () ->

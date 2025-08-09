@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class OrderDomainService {
@@ -38,12 +40,12 @@ public class OrderDomainService {
     }
 
     @Transactional(readOnly = true)
-    public java.util.List<OrderItemModel> getOrderItems(Long orderId) {
+    public List<OrderItemModel> getOrderItems(Long orderId) {
         return orderItemRepository.findByOrderId(orderId);
     }
 
     @Transactional(readOnly = true)
-    public java.util.List<OrderModel> getUserOrders(Long userId) {
+    public List<OrderModel> getUserOrders(Long userId) {
         return orderRepository.findByUserId(userId);
     }
 }

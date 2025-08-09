@@ -76,10 +76,11 @@ class OrderV1ApiE2ETest {
             );
 
             // assert
+            ApiResponse<Long> body = response.getBody();
+            assertThat(body).isNotNull();
             assertAll(
                     () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK),
-                    () -> assertThat(response.getBody()).isNotNull(),
-                    () -> assertThat(response.getBody().data()).isNotNull()
+                    () -> assertThat(body.data()).isNotNull()
             );
         }
 
@@ -108,6 +109,8 @@ class OrderV1ApiE2ETest {
             // act
             ResponseEntity<ApiResponse<Long>> response = restTemplate.exchange(ENDPOINT, HttpMethod.POST, entity, type);
             // assert
+            ApiResponse<Long> body404 = response.getBody();
+            assertThat(body404).isNotNull();
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         }
 
@@ -139,6 +142,8 @@ class OrderV1ApiE2ETest {
             // act
             ResponseEntity<ApiResponse<Long>> response = restTemplate.exchange(ENDPOINT, HttpMethod.POST, entity, type);
             // assert
+            ApiResponse<Long> body400 = response.getBody();
+            assertThat(body400).isNotNull();
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
 
@@ -198,6 +203,8 @@ class OrderV1ApiE2ETest {
             // act
             ResponseEntity<ApiResponse<Long>> response = restTemplate.exchange(ENDPOINT, HttpMethod.POST, entity, type);
             // assert
+            ApiResponse<Long> body400b = response.getBody();
+            assertThat(body400b).isNotNull();
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
 
@@ -250,6 +257,8 @@ class OrderV1ApiE2ETest {
             // act
             ResponseEntity<ApiResponse<Long>> response = restTemplate.exchange(ENDPOINT, HttpMethod.POST, entity, type);
             // assert (포인트 레코드 미존재로 404)
+            ApiResponse<Long> body404b = response.getBody();
+            assertThat(body404b).isNotNull();
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         }
 
@@ -269,6 +278,8 @@ class OrderV1ApiE2ETest {
             // act
             ResponseEntity<ApiResponse<Long>> response = restTemplate.exchange(ENDPOINT, HttpMethod.POST, entity, type);
             // assert
+            ApiResponse<Long> body400c = response.getBody();
+            assertThat(body400c).isNotNull();
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
     }
