@@ -22,6 +22,10 @@ public class BrandModel extends BaseEntity {
         this.isActive = true;
     }
 
+    public static BrandModel of(String name) {
+        return new BrandModel(name);
+    }
+
     public void deactivate() {
         this.isActive = false;
     }

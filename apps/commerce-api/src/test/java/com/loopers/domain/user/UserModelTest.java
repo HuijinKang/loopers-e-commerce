@@ -18,18 +18,20 @@ class UserModelTest {
     @Nested
     class Create {
 
-        @DisplayName("ID가 영문 및 숫자 10자 이내 형식에 맞지 않으면, User 객체 생성에 실패한다.")
-        @ParameterizedTest(name = "잘못된 userId: \"{0}\"")
+        @DisplayName("이메일이 xx@yy.zz 형식에 맞지 않으면, User 객체 생성에 실패한다.")
+        @ParameterizedTest(name = "잘못된 email: \"{0}\"")
         @ValueSource(strings = {
-                "abcdefghijk",   // 11자 이상 (길이 초과) X
-                "희진123!!",      // 한글/특수문자 X
-                "hj 123"         // 공백 X
+                "invalid-email",
+                "a@b",
+                "a@b.",
+                "@example.com",
+                "user@@example.com"
         })
-        @NullAndEmptySource // null X
-        void throwsBadRequestException_whenUserIdFormatIsInvalid(String userId) {
+        @NullAndEmptySource
+        void throwsBadRequestException_whenEmailFormatIsInvalidCases(String email) {
             // when & then
             CoreException ex = assertThrows(CoreException.class,
-                    () -> new UserModel(userId, "강희진", Gender.MALE, "2000-01-01", "hj@example.com"));
+                    () -> new UserModel(email, "강희진", Gender.MALE, "2000-01-01"));
             assertThat(ex.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
         }
 
@@ -38,7 +40,7 @@ class UserModelTest {
         void throwsBadRequestException_whenEmailFormatIsInvalid() {
             // arrange & act & assert
             CoreException exception = assertThrows(CoreException.class,
-                    () -> new UserModel("chulsoo123", "김철수", Gender.MALE, "2000-01-01", "invalid-email")); // 잘못된 이메일 형식
+                    () -> new UserModel("invalid-email", "김철수", Gender.MALE, "2000-01-01")); // 잘못된 이메일 형식
             assertThat(exception.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
         }
 
@@ -46,7 +48,7 @@ class UserModelTest {
         @Test
         void throwsBadRequestException_whenBirthFormatIsInvalid() {
             CoreException exception = assertThrows(CoreException.class,
-                    () -> new UserModel("chulsoo123", "김철수", Gender.MALE, "01-01-2000", "chulsoo@example.com"));
+                    () -> new UserModel("chulsoo@example.com", "김철수", Gender.MALE, "01-01-2000"));
             assertThat(exception.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
         }
     }

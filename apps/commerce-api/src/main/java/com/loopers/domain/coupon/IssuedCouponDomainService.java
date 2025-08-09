@@ -15,8 +15,8 @@ public class IssuedCouponDomainService {
     private final IssuedCouponRepository issuedCouponRepository;
 
     @Transactional
-    public long applyAndUse(Long issuedCouponId, Long userId, long orderAmount) {
-        IssuedCouponModel coupon = issuedCouponRepository.findById(issuedCouponId)
+    public long applyAndUseWithLock(Long issuedCouponId, Long userId, long orderAmount) {
+        IssuedCouponModel coupon = issuedCouponRepository.findByIdForUpdate(issuedCouponId)
                 .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "쿠폰을 찾을 수 없습니다."));
 
         if (!coupon.getUserId().equals(userId)) {
@@ -43,4 +43,3 @@ public class IssuedCouponDomainService {
         return coupon.apply(orderAmount);
     }
 }
-

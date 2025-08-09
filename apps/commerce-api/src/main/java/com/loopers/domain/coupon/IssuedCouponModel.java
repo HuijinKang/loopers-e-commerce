@@ -29,7 +29,17 @@ public class IssuedCouponModel extends BaseEntity {
 
     @Version
     private Long version;
+    
+    private IssuedCouponModel(CouponModel coupon, Long userId, IssuedCouponStatus status) {
+        this.coupon = coupon;
+        this.userId = userId;
+        this.status = status;
+    }
 
+    public static IssuedCouponModel of(CouponModel coupon, Long userId, IssuedCouponStatus status) {
+        return new IssuedCouponModel(coupon, userId, status);
+    }
+    
     public long apply(long orderAmount) {
         return coupon.calculateDiscount(orderAmount);
     }

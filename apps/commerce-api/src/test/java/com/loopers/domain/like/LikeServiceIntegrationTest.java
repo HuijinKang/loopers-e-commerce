@@ -59,13 +59,13 @@ class LikeServiceIntegrationTest {
         @Test
         void likeProduct_whenFirstClick() {
             // arrange
-            UserModel user = userRepository.save(new UserModel(
-                    "likeuser1", "홍길동", Gender.MALE, "2000-01-01", "user1@example.com")
+            UserModel user = userRepository.save(UserModel.of(
+                    "user1@example.com", "홍길동", Gender.MALE, "2000-01-01")
             );
 
-            BrandModel brand = brandRepository.save(new BrandModel("아디다스"));
+            BrandModel brand = brandRepository.save(BrandModel.of("아디다스"));
 
-            ProductModel product = productRepository.save(new ProductModel(brand, "에어맥스", 120000L, 10));
+            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "에어맥스", 120000L, 10));
 
             // act
             likeDomainService.toggleLike(user, product);
@@ -80,13 +80,13 @@ class LikeServiceIntegrationTest {
         @Test
         void unlikeProduct_whenClickedAgain() {
             // arrange
-            UserModel user = userRepository.save(new UserModel(
-                    "likeuser1", "홍길동", Gender.MALE, "2000-01-01", "user1@example.com")
+            UserModel user = userRepository.save(UserModel.of(
+                    "user1@example.com", "홍길동", Gender.MALE, "2000-01-01")
             );
 
-            BrandModel brand = brandRepository.save(new BrandModel("아디다스"));
+            BrandModel brand = brandRepository.save(BrandModel.of("아디다스"));
 
-            ProductModel product = productRepository.save(new ProductModel(brand, "에어맥스", 120000L, 10));
+            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "에어맥스", 120000L, 10));
 
             likeDomainService.toggleLike(user, product); // 처음 좋아요
             likeDomainService.toggleLike(user, product); // 다시 클릭 -> 취소
@@ -103,17 +103,16 @@ class LikeServiceIntegrationTest {
         @Test
         void fails_whenUserNotFound() {
             // arrange
-            BrandModel brand = brandRepository.save(new BrandModel("아디다스"));
+            BrandModel brand = brandRepository.save(BrandModel.of("아디다스"));
 
-            ProductModel product = productRepository.save(new ProductModel(brand, "에어맥스", 120000L, 10));
+            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "에어맥스", 120000L, 10));
 
-            UserModel fakeUser = new UserModel("fake123", "가짜", Gender.MALE, "1990-01-01", "fake@example.com");
+            UserModel fakeUser = UserModel.of("fake@example.com", "가짜", Gender.MALE, "1990-01-01");
 
             // act & assert
             assertThrows(CoreException.class,
-                    () -> likeFacade.toggleLike(fakeUser.getUserId(), product.getId())
+                    () -> likeFacade.toggleLike(fakeUser.getEmail(), product.getId())
             );
         }
     }
 }
-

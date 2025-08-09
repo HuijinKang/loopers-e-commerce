@@ -29,15 +29,14 @@ public class ProductDomainService {
     @Transactional
     public void deductStock(List<OrderItemModel> orderItems) {
         for (OrderItemModel item : orderItems) {
-            ProductModel product = productRepository.findById(item.getProductId())
+            ProductModel product = productRepository.findByIdForUpdate(item.getProductId())
                     .orElseThrow(() -> new CoreException(ErrorType.NOT_FOUND, "상품이 존재하지 않습니다."));
 
             if (product.getStock() < item.getQuantity()) {
-                throw new CoreException(ErrorType.NOT_FOUND, "재고가 부족합니다.");
+                throw new CoreException(ErrorType.BAD_REQUEST, "재고가 부족합니다. 상품: " + product.getName());
             }
 
             product.decreaseStock(item.getQuantity());
-
             productRepository.save(product);
         }
     }

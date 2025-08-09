@@ -3,6 +3,7 @@ package com.loopers.domain.user;
 import com.loopers.application.user.UserFacade;
 import com.loopers.interfaces.api.user.UserV1Dto;
 import com.loopers.support.error.CoreException;
+import com.loopers.support.error.ErrorType;
 import com.loopers.utils.DatabaseCleanUp;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,8 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -52,11 +51,10 @@ class UserDomainServiceIntegrationTest {
         void savesUser_whenUserCreated_withSpy() {
             // arrange
             UserV1Dto.UserRequest request = new UserV1Dto.UserRequest(
-                    "chulsoo123",
+                    "chulsoo@example.com",
                     "김철수",
                     Gender.MALE,
-                    "2000-01-01",
-                    "chulsoo@example.com"
+                    "2000-01-01"
             );
 
             // act
@@ -71,20 +69,18 @@ class UserDomainServiceIntegrationTest {
         void throwsException_whenUserIdAlreadyExists_directJpaSave() {
             // arrange
             UserV1Dto.UserRequest request1 = new UserV1Dto.UserRequest(
-                    "chulsoo123",
+                    "chulsoo@example.com",
                     "김철수",
                     Gender.MALE,
-                    "2000-01-01",
-                    "chulsoo@example.com"
+                    "2000-01-01"
             );
             userFacade.createUser(request1);
 
             UserV1Dto.UserRequest request2 = new UserV1Dto.UserRequest(
-                    "chulsoo123",
+                    "chulsoo@example.com",
                     "홍길동",
                     Gender.MALE,
-                    "1995-05-05",
-                    "hong@example.com"
+                    "1995-05-05"
             );
 
             // act & assert
@@ -93,8 +89,8 @@ class UserDomainServiceIntegrationTest {
                     () -> userFacade.createUser(request2)
             );
 
-            assertThat(exception.getErrorType().getStatus()).isEqualTo(org.springframework.http.HttpStatus.CONFLICT);
-            assertThat(exception.getMessage()).isEqualTo("이미 가입된 사용자입니다.");
+            assertThat(exception.getErrorType()).isEqualTo(ErrorType.CONFLICT);
+            assertThat(exception.getMessage()).isEqualTo("이미 존재하는 사용자입니다.");
         }
     }
 
@@ -107,34 +103,31 @@ class UserDomainServiceIntegrationTest {
         void returnsUser_whenValidUserIdProvided() {
             // arrange
             UserV1Dto.UserRequest request = new UserV1Dto.UserRequest(
-                    "huijin123",
+                    "huijin123@example.com",
                     "희진",
                     Gender.MALE,
-                    "1999-01-01",
-                    "huijin123@example.com"
+                    "1999-01-01"
             );
             userDomainService.createUser(request);
 
             // act
-            UserModel result = userDomainService.getUser("huijin123");
+            UserModel result = userDomainService.getUser("huijin123@example.com");
 
             // assert
-            assertThat(result.getUserId()).isEqualTo("huijin123");
+            assertThat(result.getEmail()).isEqualTo("huijin123@example.com");
             assertThat(result.getName()).isEqualTo("희진");
             assertThat(result.getEmail()).isEqualTo("huijin123@example.com");
         }
 
-        @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, null 이 반환된다.")
+        @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, 예외가 발생한다.")
         @Test
         void throwsNotFoundException_whenUserIdDoesNotExist() {
             // arrange
             String invalidId = "none";
 
-            // act
-            UserModel user = userDomainService.getUser(invalidId);
-
-            // assert
-            assertThat(user).isNull();
+            // act & assert
+            CoreException ex = assertThrows(CoreException.class, () -> userDomainService.getUser(invalidId));
+            assertThat(ex.getErrorType()).isEqualTo(ErrorType.NOT_FOUND);
         }
     }
 }

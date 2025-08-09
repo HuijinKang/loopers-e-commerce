@@ -8,28 +8,24 @@ import java.time.LocalDate;
 public class UserV1Dto {
 
     public record UserRequest (
-            String userId,
+            String email,
             String name,
             Gender gender,
-            String birth,
-            String email
-    ) {
-    }
+            String birth
+    ) { }
 
     public record UserResponse (
-            String userId,
+            String email,
             String name,
             Gender gender,
-            LocalDate birth,
-            String email
+            LocalDate birth
     ) {
         public static UserV1Dto.UserResponse from(UserInfo info) {
             return new UserV1Dto.UserResponse(
-                    info.userId(),
+                    info.email(),
                     info.name(),
                     info.gender(),
-                    info.birth(),
-                    info.email()
+                    info.birth()
             );
         }
     }

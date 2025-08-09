@@ -20,15 +20,15 @@ public class UserDomainService {
     }
 
     @Transactional(readOnly = true)
-    public UserModel getUser(String userId) {
-        return userRepository.findByUserId(userId).orElseThrow(
+    public UserModel getUser(String email) {
+        return userRepository.findByEmail(email).orElseThrow(
                 () -> new CoreException(ErrorType.NOT_FOUND, "사용자를 찾을 수 없습니다)")
         );
     }
 
     @Transactional(readOnly = true)
-    public void validateUserDoesNotExist(String userId) {
-        if (userRepository.findByUserId(userId).isPresent()) {
+    public void validateUserDoesNotExist(String email) {
+        if (userRepository.findByEmail(email).isPresent()) {
             throw new CoreException(ErrorType.CONFLICT, "이미 존재하는 사용자입니다.");
         }
     }

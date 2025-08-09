@@ -35,5 +35,16 @@ public class OrderV1Dto {
                 Long price
         ) {}
     }
+
+    public record OrderResponse(
+            Long id,
+            String orderNo,
+            Long totalAmount,
+            Long discountedAmount
+    ) {
+        public static OrderResponse from(com.loopers.application.order.OrderInfo info) {
+            return new OrderResponse(info.id(), info.orderNo(), info.totalAmount(), info.discountedAmount());
+        }
+    }
 }
 
