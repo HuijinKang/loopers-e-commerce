@@ -21,8 +21,8 @@ class PointModelTest {
         @Test
         void failsWhenChargingWithZeroOrLessAmount() {
             // arrange
-            UserModel user = new UserModel("chulsoo123", "김철수", Gender.MALE, "2000-01-01", "chulsoo@example.com");
-            PointModel point = new PointModel(user, 1000L);
+            UserModel user = UserModel.of("huijin123@example.com", "강희진", Gender.MALE, "2000-01-01");
+            PointModel point = PointModel.of(user.getId(), 1000L);
 
             // act & assert
             CoreException exception = assertThrows(CoreException.class,

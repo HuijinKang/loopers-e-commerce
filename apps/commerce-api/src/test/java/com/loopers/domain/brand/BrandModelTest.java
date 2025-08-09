@@ -19,7 +19,7 @@ class BrandModelTest {
             String name = "나이키";
 
             // act
-            BrandModel brand = new BrandModel(name);
+            BrandModel brand = BrandModel.of(name);
 
             // assert
             assertThat(brand.getName()).isEqualTo(name);
@@ -35,7 +35,7 @@ class BrandModelTest {
         @Test
         void deactivatesBrand() {
             // arrange
-            BrandModel brand = new BrandModel("아디다스");
+            BrandModel brand = BrandModel.of("아디다스");
 
             // act
             brand.deactivate();
@@ -48,7 +48,7 @@ class BrandModelTest {
         @Test
         void activatesBrand() {
             // arrange
-            BrandModel brand = new BrandModel("아디다스");
+            BrandModel brand = BrandModel.of("아디다스");
             brand.deactivate();
 
             // act

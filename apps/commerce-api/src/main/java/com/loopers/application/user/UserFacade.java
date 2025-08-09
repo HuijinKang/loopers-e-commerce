@@ -12,13 +12,13 @@ public class UserFacade {
     private final UserDomainService userDomainService;
 
     public UserInfo createUser(UserV1Dto.UserRequest request) {
-        userDomainService.validateUserDoesNotExist(request.userId());
+        userDomainService.validateUserDoesNotExist(request.email());
         UserModel user = userDomainService.createUser(request);
         return UserInfo.from(user);
     }
 
-    public UserInfo getUser(String userId) {
-        UserModel user = userDomainService.getUser(userId);
+    public UserInfo getUser(String email) {
+        UserModel user = userDomainService.getUser(email);
         return UserInfo.from(user);
     }
 }

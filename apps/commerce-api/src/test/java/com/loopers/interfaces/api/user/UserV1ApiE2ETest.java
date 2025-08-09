@@ -53,11 +53,10 @@ class UserV1ApiE2ETest {
         void returnsUserInfo_whenUserCreatedSuccessfully() {
             // arrange
             UserV1Dto.UserRequest request = new UserV1Dto.UserRequest(
-                    "huijin123",
-                    "희진",
+                    "huijin123@example.com",
+                    "강희진",
                     Gender.MALE,
-                    "1999-01-01",
-                    "huijin123@example.com"
+                    "2000-01-01"
             );
             HttpEntity<UserV1Dto.UserRequest> httpEntity = new HttpEntity<>(request);
             ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>> responseType = new ParameterizedTypeReference<>() {};
@@ -74,10 +73,9 @@ class UserV1ApiE2ETest {
             assertAll(
                     () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK),
                     () -> assertThat(response.getBody()).isNotNull(),
-                    () -> assertThat(response.getBody().data().userId()).isEqualTo("huijin123"),
-                    () -> assertThat(response.getBody().data().name()).isEqualTo("희진"),
+                    () -> assertThat(response.getBody().data().name()).isEqualTo("강희진"),
                     () -> assertThat(response.getBody().data().gender()).isEqualTo(Gender.MALE),
-                    () -> assertThat(response.getBody().data().birth()).isEqualTo("1999-01-01"),
+                    () -> assertThat(response.getBody().data().birth()).isEqualTo("2000-01-01"),
                     () -> assertThat(response.getBody().data().email()).isEqualTo("huijin123@example.com")
             );
         }
@@ -87,11 +85,10 @@ class UserV1ApiE2ETest {
         void returnsBadRequest_whenGenderIsMissing() {
             // arrange
             UserV1Dto.UserRequest request = new UserV1Dto.UserRequest(
-                    "huijin123",
+                    "huijin123@example.com",
                     "희진",
                     null,
-                    "1999-01-01",
-                    "huijin123@example.com"
+                    "1999-01-01"
             );
             HttpEntity<UserV1Dto.UserRequest> httpEntity = new HttpEntity<>(request);
 
@@ -118,17 +115,16 @@ class UserV1ApiE2ETest {
         @Test
         void returnsUser_whenValidHeaderProvided() {
             // arrange
-            UserModel user = new UserModel(
-                    "huijin123",
-                    "희진",
+            UserModel user = UserModel.of(
+                    "huijin123@example.com",
+                    "강희진",
                     Gender.MALE,
-                    "1999-01-01",
-                    "huijin123@example.com"
+                    "2000-01-01"
             );
             userJpaRepository.save(user);
 
             HttpHeaders headers = new HttpHeaders();
-            headers.set("X-USER-ID", "huijin123");
+            headers.set("X-USER-ID", "huijin123@example.com");
 
             HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
             ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>> responseType = new ParameterizedTypeReference<>() {};
@@ -145,11 +141,10 @@ class UserV1ApiE2ETest {
             assertAll(
                     () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK),
                     () -> assertThat(response.getBody()).isNotNull(),
-                    () -> assertThat(response.getBody().data().userId()).isEqualTo("huijin123"),
                     () -> assertThat(response.getBody().data().email()).isEqualTo("huijin123@example.com"),
-                    () -> assertThat(response.getBody().data().name()).isEqualTo("희진"),
+                    () -> assertThat(response.getBody().data().name()).isEqualTo("강희진"),
                     () -> assertThat(response.getBody().data().gender()).isEqualTo(Gender.MALE),
-                    () -> assertThat(response.getBody().data().birth()).isEqualTo("1999-01-01")
+                    () -> assertThat(response.getBody().data().birth()).isEqualTo("2000-01-01")
             );
         }
 
@@ -158,7 +153,7 @@ class UserV1ApiE2ETest {
         void returnsNotFound_whenUserNotExist() {
             // arrange
             HttpHeaders headers = new HttpHeaders();
-            headers.set("X-USER-ID", "none");
+            headers.set("X-USER-ID", "none@example.com");
 
             HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
             ParameterizedTypeReference<ApiResponse<UserV1Dto.UserResponse>> responseType = new ParameterizedTypeReference<>() {};

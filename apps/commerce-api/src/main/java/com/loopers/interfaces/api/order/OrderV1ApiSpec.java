@@ -8,12 +8,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "주문", description = "주문 관련 API")
 public interface OrderV1ApiSpec {
 
-    // 주문
     @Operation(
-            summary = "보유 포인트 조회",
-            description = "사용자의 보유 포인트를 조회합니다."
+            summary = "주문 생성",
+            description = "주문을 생성합니다."
     )
     ApiResponse<Long> placeOrder(
+            @Schema(name = "X-USER-ID", description = "요청 사용자 식별자(헤더)")
+            String userId,
+            @Schema(name = "request", description = "주문 생성 Request DTO")
+            OrderV1Dto.CreateOrderRequest request
     );
 
 }

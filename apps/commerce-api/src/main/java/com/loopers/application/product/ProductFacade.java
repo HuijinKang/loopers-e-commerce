@@ -21,4 +21,8 @@ public class ProductFacade {
                 .map(ProductV1Dto.ProductSummaryResponse::from)
                 .toList();
     }
+
+    public ProductV1Dto.ProductSummaryResponse getProduct(Long productId) {
+        return ProductV1Dto.ProductSummaryResponse.from(productDomainService.getProduct(productId));
+    }
 }

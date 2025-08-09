@@ -1,6 +1,5 @@
 package com.loopers.domain.product;
 
-import com.loopers.domain.brand.BrandModel;
 import com.loopers.support.error.CoreException;
 import com.loopers.support.error.ErrorType;
 import org.junit.jupiter.api.DisplayName;
@@ -12,8 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ProductModelTest {
-
-    private final BrandModel brand = new BrandModel("테스트브랜드");
 
     @DisplayName("상품 생성 시")
     @Nested
@@ -28,14 +25,14 @@ class ProductModelTest {
             int stock = 10;
 
             // act
-            ProductModel product = new ProductModel(brand, name, price, stock);
+            ProductModel product = ProductModel.of(1L, name, price, stock);
 
             // assert
             assertAll(
                     () -> assertThat(product.getName()).isEqualTo(name),
                     () -> assertThat(product.getPrice()).isEqualTo(price),
                     () -> assertThat(product.getStock()).isEqualTo(stock),
-                    () -> assertThat(product.getBrand()).isEqualTo(brand)
+                    () -> assertThat(product.getBrandId()).isEqualTo(1L)
             );
         }
 
@@ -49,7 +46,7 @@ class ProductModelTest {
 
             // act & assert
             CoreException exception = assertThrows(CoreException.class, () ->
-                    new ProductModel(brand, name, price, stock)
+                    ProductModel.of(1L, name, price, stock)
             );
             assertThat(exception.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
         }
@@ -64,7 +61,7 @@ class ProductModelTest {
 
             // act & assert
             CoreException exception = assertThrows(CoreException.class, () ->
-                    new ProductModel(brand, name, price, stock)
+                    ProductModel.of(1L, name, price, stock)
             );
             assertThat(exception.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
         }
@@ -78,7 +75,7 @@ class ProductModelTest {
         @Test
         void decreasesStock_whenSufficientQuantity() {
             // arrange
-            ProductModel product = new ProductModel(brand, "상품", 1000L, 10);
+            ProductModel product = ProductModel.of(1L, "상품", 1000L, 10);
 
             // act
             product.decreaseStock(3);
@@ -91,7 +88,7 @@ class ProductModelTest {
         @Test
         void throwsException_whenStockIsInsufficient() {
             // arrange
-            ProductModel product = new ProductModel(brand, "상품", 1000L, 2);
+            ProductModel product = ProductModel.of(1L, "상품", 1000L, 2);
 
             // act & assert
             CoreException exception = assertThrows(CoreException.class, () ->
@@ -109,7 +106,7 @@ class ProductModelTest {
         @Test
         void increasesLikeCount_whenCalled() {
             // arrange
-            ProductModel product = new ProductModel(brand, "상품", 1000L, 10);
+            ProductModel product = ProductModel.of(1L, "상품", 1000L, 10);
 
             // act
             product.increaseLikeCount();
@@ -122,7 +119,7 @@ class ProductModelTest {
         @Test
         void decreasesLikeCount_whenGreaterThanZero() {
             // arrange
-            ProductModel product = new ProductModel(brand, "상품", 1000L, 10);
+            ProductModel product = ProductModel.of(1L, "상품", 1000L, 10);
             product.increaseLikeCount();
 
             // act
@@ -136,7 +133,7 @@ class ProductModelTest {
         @Test
         void likeCountDoesNotGoBelowZero() {
             // arrange
-            ProductModel product = new ProductModel(brand, "상품", 1000L, 10);
+            ProductModel product = ProductModel.of(1L, "상품", 1000L, 10);
 
             // act
             product.decreaseLikeCount();
@@ -155,7 +152,7 @@ class ProductModelTest {
         @Test
         void isAvailable_whenInStockAndOnSale() {
             // arrange
-            ProductModel product = new ProductModel(brand, "상품", 1000L, 5);
+            ProductModel product = ProductModel.of(1L, "상품", 1000L, 5);
 
             // act
             boolean available = product.isAvailable();
@@ -168,7 +165,7 @@ class ProductModelTest {
         @Test
         void isNotAvailable_whenStockIsZero() {
             // arrange
-            ProductModel product = new ProductModel(brand, "상품", 1000L, 0);
+            ProductModel product = ProductModel.of(1L, "상품", 1000L, 0);
 
             // act
             boolean available = product.isAvailable();

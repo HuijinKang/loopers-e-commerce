@@ -19,7 +19,7 @@ public class CouponRepositoryImpl implements CouponRepository {
     }
 
     @Override
-    public Optional<CouponModel> findByCodeAndActiveTrue(String code) {
-        return couponJpaRepository.findByCodeAndActiveTrue(code);
+    public CouponModel save(CouponModel coupon) {
+        return couponJpaRepository.save(coupon);
     }
 }

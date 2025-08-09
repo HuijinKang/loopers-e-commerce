@@ -48,9 +48,9 @@ class PointV1ApiE2ETest {
 
     @BeforeEach
     void setUp() {
-        UserModel newUser = new UserModel("testUser", "Test Name", Gender.MALE, "2000-01-01", "test@example.com");
+        UserModel newUser = UserModel.of("huijin123@example.com", "강희진", Gender.MALE, "2000-01-01");
         userRepository.save(newUser);
-        testUser = userRepository.findByUserId(newUser.getUserId()).orElseThrow();
+        testUser = userRepository.findByEmail(newUser.getEmail()).orElseThrow();
     }
 
     @AfterEach
@@ -70,7 +70,7 @@ class PointV1ApiE2ETest {
             pointRepository.save(initialPoint);
 
             HttpHeaders headers = new HttpHeaders();
-            headers.set("X-USER-ID", testUser.getUserId());
+            headers.set("X-USER-ID", testUser.getEmail());
             HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
             // act
@@ -101,6 +101,23 @@ class PointV1ApiE2ETest {
             // assert
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
+
+        @DisplayName("존재하지 않는 유저로 포인트 조회 시 404 Not Found 응답을 반환한다.")
+        @Test
+        void returnsNotFound_whenGetPointNonExistentUser() {
+            // arrange
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("X-USER-ID", "no-user@example.com");
+            HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+            // act
+            ResponseEntity<String> response = testRestTemplate.exchange(
+                    ENDPOINT_GET_POINT, HttpMethod.GET, requestEntity, String.class
+            );
+
+            // assert
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DisplayName("POST /api/v1/points/charge")
@@ -114,7 +131,7 @@ class PointV1ApiE2ETest {
             PointV1Dto.ChargeRequest request = new PointV1Dto.ChargeRequest(1000L);
 
             HttpHeaders headers = new HttpHeaders();
-            headers.set("X-USER-ID", testUser.getUserId());
+            headers.set("X-USER-ID", testUser.getEmail());
             HttpEntity<PointV1Dto.ChargeRequest> requestEntity = new HttpEntity<>(request, headers);
 
             // act
@@ -149,6 +166,44 @@ class PointV1ApiE2ETest {
 
             // assert
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
+
+        @DisplayName("0 이하 금액으로 충전 시 400 Bad Request 응답을 반환한다")
+        @Test
+        void returnsBadRequest_whenChargeAmountInvalid() {
+            // arrange
+            PointV1Dto.ChargeRequest request = new PointV1Dto.ChargeRequest(0L);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("X-USER-ID", testUser.getEmail());
+            HttpEntity<PointV1Dto.ChargeRequest> requestEntity = new HttpEntity<>(request, headers);
+
+            // act
+            ResponseEntity<String> response = testRestTemplate.exchange(
+                    ENDPOINT_CHARGE_POINT, HttpMethod.POST, requestEntity, String.class
+            );
+
+            // assert
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+
+        @DisplayName("음수 금액으로 충전 시 400 Bad Request 응답을 반환한다")
+        @Test
+        void returnsBadRequest_whenChargeAmountNegative() {
+            // arrange
+            PointV1Dto.ChargeRequest request = new PointV1Dto.ChargeRequest(-1000L);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("X-USER-ID", testUser.getEmail());
+            HttpEntity<PointV1Dto.ChargeRequest> requestEntity = new HttpEntity<>(request, headers);
+
+            // act
+            ResponseEntity<String> response = testRestTemplate.exchange(
+                    ENDPOINT_CHARGE_POINT, HttpMethod.POST, requestEntity, String.class
+            );
+
+            // assert
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
     }
 }

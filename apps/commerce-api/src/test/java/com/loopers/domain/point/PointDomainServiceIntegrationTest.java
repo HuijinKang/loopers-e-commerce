@@ -48,9 +48,9 @@ class PointDomainServiceIntegrationTest {
         @Test
         void returnsPoint_whenUserExists() {
             // arrange
-            UserModel user = new UserModel("chulsoo123", "김철수", Gender.MALE, "2000-01-01", "chulsoo@example.com");
+            UserModel user = UserModel.of("huijin123@example.com", "강희진", Gender.MALE, "2000-01-01");
             userRepository.save(user);
-            UserModel savedUser = userRepository.findByUserId("chulsoo123").orElseThrow();
+            UserModel savedUser = userRepository.findByEmail("huijin123@example.com").orElseThrow();
             PointModel point = PointModel.of(savedUser.getId(), 500L);
             pointRepository.save(point);
 
@@ -61,17 +61,15 @@ class PointDomainServiceIntegrationTest {
             assertThat(result.getAmount()).isEqualTo(500L);
         }
 
-        @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, null 이 반환된다.")
+        @DisplayName("해당 ID 의 회원이 존재하지 않을 경우, 예외가 발생한다.")
         @Test
-        void returnsError_whenUserNotExist() {
+        void throwsException_whenUserNotExist() {
             // arrange
             Long invalidId = 999L; // 존재하지 않는 ID
 
-            // act
-            PointModel result = pointDomainService.getPoint(invalidId);
-
-            // assert
-            assertThat(result).isNull();
+            // act & assert
+            CoreException ex = assertThrows(CoreException.class, () -> pointDomainService.getPoint(invalidId));
+            assertThat(ex.getErrorType()).isEqualTo(com.loopers.support.error.ErrorType.NOT_FOUND);
         }
     }
 

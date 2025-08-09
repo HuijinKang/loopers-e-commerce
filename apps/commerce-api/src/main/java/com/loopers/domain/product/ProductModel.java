@@ -38,6 +38,10 @@ public class ProductModel extends BaseEntity {
         this.likeCount = 0;
     }
 
+    public static ProductModel of(Long brandId, String name, Long price, int stock) {
+        return new ProductModel(brandId, name, price, stock);
+    }
+
     public void decreaseStock(int quantity) {
         if (quantity <= 0) throw new CoreException(ErrorType.BAD_REQUEST, "감소 수량은 0보다 커야 합니다.");
         if (stock < quantity) throw new CoreException(ErrorType.BAD_REQUEST, "재고가 부족합니다.");

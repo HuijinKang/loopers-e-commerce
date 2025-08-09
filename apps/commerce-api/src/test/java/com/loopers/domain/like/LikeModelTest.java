@@ -20,25 +20,24 @@ class LikeModelTest {
         @Test
         void createLikeWithStaticFactory() {
             // arrange
-            UserModel user = new UserModel(
-                    "user123",
+            UserModel user = UserModel.of(
+                    "huijin123@example.com",
                     "강희진",
                     Gender.MALE,
-                    "2000-01-01",
-                    "user@example.com"
+                    "2000-01-01"
             );
 
-            BrandModel brand = new BrandModel("나이키");
+            BrandModel brand = BrandModel.of("나이키");
 
-            ProductModel product = new ProductModel(
-                    brand,
+            ProductModel product = ProductModel.of(
+                    brand.getId(),
                     "에어포스",
                     150000L,
                     10
             );
 
             // act
-            LikeModel like = LikeModel.from(user.getId(), product.getId());
+            LikeModel like = LikeModel.of(user.getId(), product.getId());
 
             // assert
             assertThat(like.getUserId()).isEqualTo(user.getId());
@@ -46,4 +45,3 @@ class LikeModelTest {
         }
     }
 }
-

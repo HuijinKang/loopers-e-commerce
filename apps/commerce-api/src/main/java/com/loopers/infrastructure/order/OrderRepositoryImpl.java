@@ -2,6 +2,8 @@ package com.loopers.infrastructure.order;
 
 import com.loopers.domain.order.OrderModel;
 import com.loopers.domain.order.OrderRepository;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +16,20 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public OrderModel save(OrderModel order) {
         return orderJpaRepository.save(order);
+    }
+
+    @Override
+    public Optional<OrderModel> findById(Long id) {
+        return orderJpaRepository.findById(id);
+    }
+
+    @Override
+    public List<OrderModel> findByUserId(Long userId) {
+        return orderJpaRepository.findByUserId(userId);
+    }
+
+    @Override
+    public long countByUserId(Long userId) {
+        return orderJpaRepository.countByUserId(userId);
     }
 }

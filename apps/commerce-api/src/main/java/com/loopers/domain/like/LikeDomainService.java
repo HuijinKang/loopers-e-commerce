@@ -22,13 +22,20 @@ public class LikeDomainService {
             likeRepository.delete(existing.get());
             product.decreaseLikeCount();
         } else {
-            likeRepository.save(LikeModel.from(user.getId(), product.getId()));
+            likeRepository.save(LikeModel.of(user.getId(), product.getId()));
             product.increaseLikeCount();
         }
     }
 
     public boolean isLiked(Long userId, Long productId) {
         return likeRepository.existsByUserIdAndProductId(userId, productId);
+    }
+
+    @Transactional(readOnly = true)
+    public java.util.List<Long> getLikedProductIds(Long userId) {
+        return likeRepository.findByUserId(userId).stream()
+                .map(LikeModel::getProductId)
+                .toList();
     }
 }
 

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderDomainService {
 
     private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
 
     @Transactional
     public OrderModel create(
@@ -29,5 +30,20 @@ public class OrderDomainService {
                 OrderStatus.PENDING
         );
         return orderRepository.save(order);
+    }
+
+    @Transactional(readOnly = true)
+    public OrderModel getOrder(Long orderId) {
+        return orderRepository.findById(orderId).orElseThrow();
+    }
+
+    @Transactional(readOnly = true)
+    public java.util.List<OrderItemModel> getOrderItems(Long orderId) {
+        return orderItemRepository.findByOrderId(orderId);
+    }
+
+    @Transactional(readOnly = true)
+    public java.util.List<OrderModel> getUserOrders(Long userId) {
+        return orderRepository.findByUserId(userId);
     }
 }
