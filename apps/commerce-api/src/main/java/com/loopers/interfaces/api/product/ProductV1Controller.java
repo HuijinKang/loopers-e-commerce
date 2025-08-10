@@ -25,10 +25,11 @@ public class ProductV1Controller {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "LATEST") ProductSortType sortType,
-            @RequestParam(required = false) ProductStatus status
+            @RequestParam(required = false) ProductStatus status,
+            @RequestParam(required = false) Long brandId
     ) {
         return ApiResponse.success(
-                productQueryFacade.getProducts(page, size, sortType, status)
+                productQueryFacade.getProducts(page, size, sortType, status, brandId)
         );
     }
 

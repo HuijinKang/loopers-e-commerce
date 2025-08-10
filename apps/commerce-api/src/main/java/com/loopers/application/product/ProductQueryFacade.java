@@ -17,8 +17,8 @@ public class ProductQueryFacade {
     private final ProductDomainService productDomainService;
 
     @Transactional(readOnly = true)
-    public List<ProductV1Dto.ProductSummaryResponse> getProducts(int page, int size, ProductSortType sortType, ProductStatus status) {
-        return productDomainService.getProducts(page, size, sortType, status)
+    public List<ProductV1Dto.ProductSummaryResponse> getProducts(int page, int size, ProductSortType sortType, ProductStatus status, Long brandId) {
+        return productDomainService.getProducts(page, size, sortType, status, brandId)
                 .stream()
                 .map(ProductV1Dto.ProductSummaryResponse::from)
                 .toList();

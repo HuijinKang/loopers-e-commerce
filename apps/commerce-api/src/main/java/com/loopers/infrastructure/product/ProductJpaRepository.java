@@ -13,6 +13,8 @@ import jakarta.persistence.LockModeType;
 
 public interface ProductJpaRepository extends JpaRepository<ProductModel, Long> {
     Page<ProductModel> findByStatus(ProductStatus status, Pageable pageable);
+    Page<ProductModel> findByBrandId(Long brandId, Pageable pageable);
+    Page<ProductModel> findByBrandIdAndStatus(Long brandId, ProductStatus status, Pageable pageable);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select p from ProductModel p where p.id = :id")

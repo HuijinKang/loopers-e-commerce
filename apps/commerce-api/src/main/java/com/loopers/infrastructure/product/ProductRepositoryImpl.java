@@ -30,15 +30,20 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public List<ProductModel> search(int page, int size, ProductSortType sortType, ProductStatus status) {
+    public List<ProductModel> search(int page, int size, ProductSortType sortType, ProductStatus status, Long brandId) {
         Sort sort = ProductSortMapper.toSort(sortType);
         Pageable pageable = PageRequest.of(page, size, sort);
 
+        if (brandId != null && status != null) {
+            return productJpaRepository.findByBrandIdAndStatus(brandId, status, pageable).getContent();
+        }
+        if (brandId != null) {
+            return productJpaRepository.findByBrandId(brandId, pageable).getContent();
+        }
         if (status != null) {
             return productJpaRepository.findByStatus(status, pageable).getContent();
-        } else {
-            return productJpaRepository.findAll(pageable).getContent();
         }
+        return productJpaRepository.findAll(pageable).getContent();
     }
 
     @Override

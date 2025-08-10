@@ -22,8 +22,8 @@ public class ProductDomainService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductModel> getProducts(int page, int size, ProductSortType sortType, ProductStatus status) {
-        return productRepository.search(page, size, sortType, status);
+    public List<ProductModel> getProducts(int page, int size, ProductSortType sortType, ProductStatus status, Long brandId) {
+        return productRepository.search(page, size, sortType, status, brandId);
     }
 
     @Transactional
