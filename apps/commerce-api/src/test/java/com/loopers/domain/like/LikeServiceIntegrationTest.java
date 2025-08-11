@@ -4,6 +4,7 @@ import com.loopers.application.like.LikeFacade;
 import com.loopers.domain.brand.BrandModel;
 import com.loopers.domain.brand.BrandRepository;
 import com.loopers.domain.product.ProductModel;
+import com.loopers.domain.product.ProductStatus;
 import com.loopers.domain.product.ProductRepository;
 import com.loopers.domain.user.Gender;
 import com.loopers.domain.user.UserModel;
@@ -65,7 +66,7 @@ class LikeServiceIntegrationTest {
 
             BrandModel brand = brandRepository.save(BrandModel.of("아디다스"));
 
-            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "에어맥스", 120000L, 10));
+            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "에어맥스", 120000L, 10, ProductStatus.ON_SALE));
 
             // act
             likeDomainService.toggleLike(user, product);
@@ -86,7 +87,7 @@ class LikeServiceIntegrationTest {
 
             BrandModel brand = brandRepository.save(BrandModel.of("아디다스"));
 
-            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "에어맥스", 120000L, 10));
+            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "에어맥스", 120000L, 10, ProductStatus.ON_SALE));
 
             likeDomainService.toggleLike(user, product); // 처음 좋아요
             likeDomainService.toggleLike(user, product); // 다시 클릭 -> 취소
@@ -105,7 +106,7 @@ class LikeServiceIntegrationTest {
             // arrange
             BrandModel brand = brandRepository.save(BrandModel.of("아디다스"));
 
-            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "에어맥스", 120000L, 10));
+            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "에어맥스", 120000L, 10, ProductStatus.ON_SALE));
 
             UserModel fakeUser = UserModel.of("fake@example.com", "가짜", Gender.MALE, "1990-01-01");
 

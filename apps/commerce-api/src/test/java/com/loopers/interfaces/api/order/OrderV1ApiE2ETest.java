@@ -6,6 +6,7 @@ import com.loopers.domain.coupon.*;
 import com.loopers.domain.point.PointDomainService;
 import com.loopers.domain.order.Option;
 import com.loopers.domain.product.ProductModel;
+import com.loopers.domain.product.ProductStatus;
 import com.loopers.domain.product.ProductRepository;
 import com.loopers.domain.user.Gender;
 import com.loopers.domain.user.UserModel;
@@ -54,7 +55,7 @@ class OrderV1ApiE2ETest {
             // arrange
             UserModel user = userJpaRepository.save(UserModel.of("order@test.com", "주문자", Gender.MALE, "1990-01-01"));
             BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10000L, 10));
+            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10000L, 10, ProductStatus.ON_SALE));
 
             pointDomainService.chargePoint(user, 50000L);
 
@@ -90,7 +91,7 @@ class OrderV1ApiE2ETest {
             // arrange
             UserModel user = userJpaRepository.save(UserModel.of("nofc@test.com", "주문자", Gender.MALE, "1990-01-01"));
             BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10000L, 5));
+            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10000L, 5, ProductStatus.ON_SALE));
 
             pointDomainService.chargePoint(user, 50000L);
 
@@ -120,7 +121,7 @@ class OrderV1ApiE2ETest {
             // arrange
             UserModel user = userJpaRepository.save(UserModel.of("usedc@test.com", "주문자", Gender.MALE, "1990-01-01"));
             BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10000L, 5));
+            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10000L, 5, ProductStatus.ON_SALE));
 
             pointDomainService.chargePoint(user, 50000L);
 
@@ -154,7 +155,7 @@ class OrderV1ApiE2ETest {
             UserModel owner = userJpaRepository.save(UserModel.of("owner@test.com", "소유자", Gender.MALE, "1990-01-01"));
             UserModel other = userJpaRepository.save(UserModel.of("other@test.com", "타인", Gender.MALE, "1990-01-01"));
             BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10000L, 5));
+            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10000L, 5, ProductStatus.ON_SALE));
 
             pointDomainService.chargePoint(other, 50000L);
 
@@ -185,7 +186,7 @@ class OrderV1ApiE2ETest {
             // arrange
             UserModel user = userJpaRepository.save(UserModel.of("insufficient@test.com", "주문자", Gender.MALE, "1990-01-01"));
             BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10000L, 5));
+            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10000L, 5, ProductStatus.ON_SALE));
 
             pointDomainService.chargePoint(user, 500L); // 레코드 생성 + 소액만 충전
 
@@ -214,7 +215,7 @@ class OrderV1ApiE2ETest {
             // arrange
             UserModel user = userJpaRepository.save(UserModel.of("stock@test.com", "주문자", Gender.MALE, "1990-01-01"));
             BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10000L, 1));
+            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10000L, 1, ProductStatus.ON_SALE));
             pointDomainService.chargePoint(user, 50000L);
 
             OrderV1Dto.CreateOrderRequest request = new OrderV1Dto.CreateOrderRequest(
@@ -240,7 +241,7 @@ class OrderV1ApiE2ETest {
             // arrange
             UserModel user = userJpaRepository.save(UserModel.of("point@test.com", "주문자", Gender.MALE, "1990-01-01"));
             BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10000L, 5));
+            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10000L, 5, ProductStatus.ON_SALE));
 
             // 보유 포인트 0 상태에서 1000 사용 시도
             OrderV1Dto.CreateOrderRequest request = new OrderV1Dto.CreateOrderRequest(

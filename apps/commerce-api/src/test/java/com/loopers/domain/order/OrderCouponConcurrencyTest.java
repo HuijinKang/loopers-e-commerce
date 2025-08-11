@@ -6,6 +6,7 @@ import com.loopers.domain.brand.BrandRepository;
 import com.loopers.domain.coupon.*;
 import com.loopers.domain.point.PointDomainService;
 import com.loopers.domain.product.ProductModel;
+import com.loopers.domain.product.ProductStatus;
 import com.loopers.domain.product.ProductRepository;
 import com.loopers.domain.user.Gender;
 import com.loopers.domain.user.UserModel;
@@ -49,7 +50,7 @@ class OrderCouponConcurrencyTest {
         // arrange
         UserModel user = userJpaRepository.save(UserModel.of("coupon-con@test.com", "쿠폰유저", Gender.MALE, "1990-01-01"));
         BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-        ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10000L, 20));
+        ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10000L, 20, ProductStatus.ON_SALE));
 
         pointDomainService.chargePoint(user, 200_000L);
 

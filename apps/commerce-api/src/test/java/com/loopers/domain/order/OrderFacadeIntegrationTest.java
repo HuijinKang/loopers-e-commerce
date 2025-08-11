@@ -7,6 +7,7 @@ import com.loopers.domain.coupon.*;
 import com.loopers.domain.point.PointDomainService;
 import com.loopers.domain.point.PointRepository;
 import com.loopers.domain.product.ProductModel;
+import com.loopers.domain.product.ProductStatus;
 import com.loopers.domain.product.ProductRepository;
 import com.loopers.domain.user.Gender;
 import com.loopers.domain.user.UserModel;
@@ -50,8 +51,8 @@ class OrderFacadeIntegrationTest {
             // arrange
             UserModel user = userJpaRepository.save(UserModel.of("of-int-success@test.com", "주문자", Gender.MALE, "1990-01-01"));
             BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-            ProductModel p1 = productRepository.save(ProductModel.of(brand.getId(), "상품1", 5000L, 5));
-            ProductModel p2 = productRepository.save(ProductModel.of(brand.getId(), "상품2", 3000L, 3));
+            ProductModel p1 = productRepository.save(ProductModel.of(brand.getId(), "상품1", 5000L, 5, ProductStatus.ON_SALE));
+            ProductModel p2 = productRepository.save(ProductModel.of(brand.getId(), "상품2", 3000L, 3, ProductStatus.ON_SALE));
             pointDomainService.chargePoint(user, 10_000L);
 
             OrderV1Dto.CreateOrderCommand command = new OrderV1Dto.CreateOrderCommand(
@@ -90,7 +91,7 @@ class OrderFacadeIntegrationTest {
             // arrange
             UserModel user = userJpaRepository.save(UserModel.of("of-int-rollback@test.com", "주문자", Gender.MALE, "1990-01-01"));
             BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-            ProductModel p1 = productRepository.save(ProductModel.of(brand.getId(), "상품1", 5000L, 2));
+            ProductModel p1 = productRepository.save(ProductModel.of(brand.getId(), "상품1", 5000L, 2, ProductStatus.ON_SALE));
             pointDomainService.chargePoint(user, 1_000L); // 일부만 충전
 
             CouponModel coupon = couponRepository.save(CouponModel.ofFixed("FIX-1000-RB", "fixed", 1000L));

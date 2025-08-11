@@ -45,7 +45,7 @@ class StockConcurrencyTest {
         // Given: 재고 10개인 상품과 15명의 사용자를 준비
         BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
         ProductModel product = productRepository.save(
-                ProductModel.of(brand.getId(), "한정", 10_000L, 10)
+                ProductModel.of(brand.getId(), "한정", 10_000L, 10, ProductStatus.ON_SALE)
         );
 
         int users = 15;

@@ -5,6 +5,7 @@ import com.loopers.domain.brand.BrandRepository;
 import com.loopers.domain.order.Option;
 import com.loopers.domain.point.PointDomainService;
 import com.loopers.domain.product.ProductModel;
+import com.loopers.domain.product.ProductStatus;
 import com.loopers.domain.product.ProductRepository;
 import com.loopers.domain.user.Gender;
 import com.loopers.domain.user.UserModel;
@@ -67,7 +68,7 @@ class OrderQueryV1ApiE2ETest {
             // arrange
             UserModel user = userJpaRepository.save(UserModel.of("orders@test.com", "주문자", Gender.MALE, "1990-01-01"));
             BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-            ProductModel p = productRepository.save(ProductModel.of(brand.getId(), "상품", 5000L, 10));
+            ProductModel p = productRepository.save(ProductModel.of(brand.getId(), "상품", 5000L, 10, ProductStatus.ON_SALE));
             pointDomainService.chargePoint(user, 50_000L);
             createOrder(user, p, 0L);
 
@@ -100,7 +101,7 @@ class OrderQueryV1ApiE2ETest {
             // arrange
             UserModel user = userJpaRepository.save(UserModel.of("order-detail@test.com", "주문자", Gender.MALE, "1990-01-01"));
             BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-            ProductModel p = productRepository.save(ProductModel.of(brand.getId(), "상품", 7000L, 10));
+            ProductModel p = productRepository.save(ProductModel.of(brand.getId(), "상품", 7000L, 10, ProductStatus.ON_SALE));
             pointDomainService.chargePoint(user, 50_000L);
             Long orderId = createOrder(user, p, 0L);
 
@@ -130,7 +131,7 @@ class OrderQueryV1ApiE2ETest {
             UserModel owner = userJpaRepository.save(UserModel.of("order-owner@test.com", "주문자", Gender.MALE, "1990-01-01"));
             UserModel other = userJpaRepository.save(UserModel.of("order-other@test.com", "타인", Gender.MALE, "1990-01-01"));
             BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-            ProductModel p = productRepository.save(ProductModel.of(brand.getId(), "상품", 9000L, 10));
+            ProductModel p = productRepository.save(ProductModel.of(brand.getId(), "상품", 9000L, 10, ProductStatus.ON_SALE));
             pointDomainService.chargePoint(owner, 50_000L);
             Long orderId = createOrder(owner, p, 0L);
 

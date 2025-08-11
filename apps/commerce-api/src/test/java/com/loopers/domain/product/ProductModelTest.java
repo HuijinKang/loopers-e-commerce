@@ -25,7 +25,7 @@ class ProductModelTest {
             int stock = 10;
 
             // act
-            ProductModel product = ProductModel.of(1L, name, price, stock);
+            ProductModel product = ProductModel.of(1L, name, price, stock, ProductStatus.ON_SALE);
 
             // assert
             assertAll(
@@ -46,7 +46,7 @@ class ProductModelTest {
 
             // act & assert
             CoreException exception = assertThrows(CoreException.class, () ->
-                    ProductModel.of(1L, name, price, stock)
+                    ProductModel.of(1L, name, price, stock, ProductStatus.ON_SALE)
             );
             assertThat(exception.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
         }
@@ -61,7 +61,7 @@ class ProductModelTest {
 
             // act & assert
             CoreException exception = assertThrows(CoreException.class, () ->
-                    ProductModel.of(1L, name, price, stock)
+                    ProductModel.of(1L, name, price, stock, ProductStatus.ON_SALE)
             );
             assertThat(exception.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST);
         }
@@ -75,7 +75,7 @@ class ProductModelTest {
         @Test
         void decreasesStock_whenSufficientQuantity() {
             // arrange
-            ProductModel product = ProductModel.of(1L, "상품", 1000L, 10);
+            ProductModel product = ProductModel.of(1L, "상품", 1000L, 10, ProductStatus.ON_SALE);
 
             // act
             product.decreaseStock(3);
@@ -88,7 +88,7 @@ class ProductModelTest {
         @Test
         void throwsException_whenStockIsInsufficient() {
             // arrange
-            ProductModel product = ProductModel.of(1L, "상품", 1000L, 2);
+            ProductModel product = ProductModel.of(1L, "상품", 1000L, 2, ProductStatus.ON_SALE);
 
             // act & assert
             CoreException exception = assertThrows(CoreException.class, () ->
@@ -106,7 +106,7 @@ class ProductModelTest {
         @Test
         void increasesLikeCount_whenCalled() {
             // arrange
-            ProductModel product = ProductModel.of(1L, "상품", 1000L, 10);
+            ProductModel product = ProductModel.of(1L, "상품", 1000L, 10, ProductStatus.ON_SALE);
 
             // act
             product.increaseLikeCount();
@@ -119,7 +119,7 @@ class ProductModelTest {
         @Test
         void decreasesLikeCount_whenGreaterThanZero() {
             // arrange
-            ProductModel product = ProductModel.of(1L, "상품", 1000L, 10);
+            ProductModel product = ProductModel.of(1L, "상품", 1000L, 10, ProductStatus.ON_SALE);
             product.increaseLikeCount();
 
             // act
@@ -133,7 +133,7 @@ class ProductModelTest {
         @Test
         void likeCountDoesNotGoBelowZero() {
             // arrange
-            ProductModel product = ProductModel.of(1L, "상품", 1000L, 10);
+            ProductModel product = ProductModel.of(1L, "상품", 1000L, 10, ProductStatus.ON_SALE);
 
             // act
             product.decreaseLikeCount();
@@ -152,7 +152,7 @@ class ProductModelTest {
         @Test
         void isAvailable_whenInStockAndOnSale() {
             // arrange
-            ProductModel product = ProductModel.of(1L, "상품", 1000L, 5);
+            ProductModel product = ProductModel.of(1L, "상품", 1000L, 5, ProductStatus.ON_SALE);
 
             // act
             boolean available = product.isAvailable();
@@ -165,7 +165,7 @@ class ProductModelTest {
         @Test
         void isNotAvailable_whenStockIsZero() {
             // arrange
-            ProductModel product = ProductModel.of(1L, "상품", 1000L, 0);
+            ProductModel product = ProductModel.of(1L, "상품", 1000L, 0, ProductStatus.ON_SALE);
 
             // act
             boolean available = product.isAvailable();

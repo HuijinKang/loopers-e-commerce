@@ -3,6 +3,7 @@ package com.loopers.support.seed;
 import com.loopers.domain.brand.BrandModel;
 import com.loopers.infrastructure.brand.BrandJpaRepository;
 import com.loopers.domain.product.ProductModel;
+import com.loopers.domain.product.ProductStatus;
 import com.loopers.infrastructure.product.ProductJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +26,9 @@ public class ProductSeedRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        int totalProducts = parseEnv("SEED_PRODUCTS", 100_000);
+        int totalProducts = parseEnv("SEED_PRODUCTS", 1_000_000);
         int brandCount = parseEnv("SEED_BRANDS", 1_000);
-        int batchSize = parseEnv("SEED_BATCH_SIZE", 1_000);
+        int batchSize = parseEnv("SEED_BATCH_SIZE", 5_000);
 
         log.info("[SEED] start - brands={}, products={}, batchSize={}", brandCount, totalProducts, batchSize);
 
@@ -56,10 +57,14 @@ public class ProductSeedRunner implements CommandLineRunner {
             long price = ThreadLocalRandom.current().nextLong(1_000L, 1_000_001L);
             int stock = ThreadLocalRandom.current().nextInt(10, 101);
 
-            ProductModel p = ProductModel.of(brandId, "상품-" + i, price, stock);
+            // 80%는 ON_SALE, 20%는 SOLD_OUT
+            ProductStatus status = ThreadLocalRandom.current().nextInt(100) < 80
+                    ? ProductStatus.ON_SALE
+                    : ProductStatus.SOLD_OUT;
+            ProductModel p = ProductModel.of(brandId, "상품-" + i, price, stock, status);
 
-            // likeCount: 0 ~ 100 사이 임의 설정 (increase 호출로 도메인 규칙 준수)
-            int likes = ThreadLocalRandom.current().nextInt(0, 101);
+            // likeCount: 0 ~ 10000 사이
+            int likes = ThreadLocalRandom.current().nextInt(0, 10001);
             for (int k = 0; k < likes; k++) {
                 p.increaseLikeCount();
             }

@@ -2,6 +2,7 @@ package com.loopers.domain.like;
 
 import com.loopers.domain.brand.BrandModel;
 import com.loopers.domain.product.ProductModel;
+import com.loopers.domain.product.ProductStatus;
 import com.loopers.domain.user.Gender;
 import com.loopers.domain.user.UserModel;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +34,8 @@ class LikeModelTest {
                     brand.getId(),
                     "에어포스",
                     150000L,
-                    10
+                    10,
+                    ProductStatus.ON_SALE
             );
 
             // act

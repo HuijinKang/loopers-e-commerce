@@ -16,10 +16,11 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/products")
-public class ProductV1Controller {
+public class ProductV1Controller implements ProductV1ApiSpec {
 
     private final ProductQueryFacade productQueryFacade;
 
+    @Override
     @GetMapping
     public ApiResponse<List<ProductV1Dto.ProductSummaryResponse>> getProducts(
             @RequestParam(defaultValue = "0") int page,
@@ -33,6 +34,7 @@ public class ProductV1Controller {
         );
     }
 
+    @Override
     @GetMapping("/{productId}")
     public ApiResponse<ProductV1Dto.ProductSummaryResponse> getProduct(@PathVariable Long productId) {
         return ApiResponse.success(productQueryFacade.getProduct(productId));

@@ -27,19 +27,20 @@ public class ProductModel extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
-    public ProductModel(Long brandId, String name, Long price, int stock) {
+    public ProductModel(Long brandId, String name, Long price, int stock, ProductStatus status) {
         if (price < 0) throw new CoreException(ErrorType.BAD_REQUEST, "가격은 0 이상이어야 합니다.");
         if (stock < 0) throw new CoreException(ErrorType.BAD_REQUEST, "재고는 0 이상이어야 합니다.");
+        if (status == null) throw new CoreException(ErrorType.BAD_REQUEST, "상품 상태는 null 일 수 없습니다.");
         this.brandId = brandId;
         this.name = name;
         this.price = price;
         this.stock = stock;
-        this.status = ProductStatus.ON_SALE;
+        this.status = status;
         this.likeCount = 0;
     }
 
-    public static ProductModel of(Long brandId, String name, Long price, int stock) {
-        return new ProductModel(brandId, name, price, stock);
+    public static ProductModel of(Long brandId, String name, Long price, int stock, ProductStatus status) {
+        return new ProductModel(brandId, name, price, stock, status);
     }
 
     public void decreaseStock(int quantity) {
@@ -60,6 +61,11 @@ public class ProductModel extends BaseEntity {
 
     public boolean isAvailable() {
         return this.status == ProductStatus.ON_SALE && this.stock > 0;
+    }
+
+    public void changeStatus(ProductStatus newStatus) {
+        if (newStatus == null) throw new CoreException(ErrorType.BAD_REQUEST, "상품 상태는 null 일 수 없습니다.");
+        this.status = newStatus;
     }
 }
 
