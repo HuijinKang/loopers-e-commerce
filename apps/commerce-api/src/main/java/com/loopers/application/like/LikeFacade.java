@@ -20,7 +20,7 @@ public class LikeFacade {
     @Transactional
     public void toggleLike(String email, Long productId) {
         UserModel user = userDomainService.getUser(email);
-        ProductModel product = productDomainService.getProduct(productId);
+        ProductModel product = productDomainService.getProductForUpdate(productId);
 
         likeDomainService.toggleLike(user, product);
     }

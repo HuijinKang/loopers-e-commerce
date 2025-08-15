@@ -37,7 +37,7 @@ class LikeConcurrencyTest {
     @AfterEach
     void tearDown() { databaseCleanUp.truncateAllTables(); }
 
-    @DisplayName("50명이 동시에 좋아요를 눌러도 총 좋아요 수가 정확하다")
+    @DisplayName("50명이 동시에 좋아요를 눌러도 총 좋아요 수와 like 테이블 상태가 일치한다")
     @Test
     void likeCountAccurate_whenConcurrentLikes() throws InterruptedException {
         // arrange
@@ -66,9 +66,12 @@ class LikeConcurrencyTest {
         executor.shutdown();
 
         // assert
-        long count = users.stream()
+        long likedRows = users.stream()
                 .filter(u -> likeRepository.existsByUserIdAndProductId(u.getId(), product.getId()))
                 .count();
-        assertThat(count).isEqualTo(50);
+        assertThat(likedRows).isEqualTo(50);
+
+        ProductModel refreshed = productRepository.findById(product.getId()).orElseThrow();
+        assertThat(refreshed.getLikeCount()).isEqualTo(50);
     }
 }

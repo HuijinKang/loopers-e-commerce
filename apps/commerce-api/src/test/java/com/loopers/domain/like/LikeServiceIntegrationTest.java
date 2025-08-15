@@ -100,6 +100,26 @@ class LikeServiceIntegrationTest {
             assertThat(product.getLikeCount()).isEqualTo(0);
         }
 
+        @DisplayName("여러 번 토글해도 likeCount가 음수가 되지 않는다")
+        @Test
+        void likeCountNeverNegative_withSequentialToggle() {
+            // arrange
+            UserModel user = userRepository.save(UserModel.of(
+                    "user2@example.com", "홍길동", Gender.MALE, "1995-01-01")
+            );
+            BrandModel brand = brandRepository.save(BrandModel.of("나이키"));
+            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "코르테즈", 99000L, 5, ProductStatus.ON_SALE));
+
+            // act
+            likeDomainService.toggleLike(user, product); // +1
+            likeDomainService.toggleLike(user, product); // -1 -> 0
+            likeDomainService.toggleLike(user, product); // +1 -> 1
+            likeDomainService.toggleLike(user, product); // -1 -> 0
+
+            // assert
+            assertThat(product.getLikeCount()).isEqualTo(0);
+        }
+
         @DisplayName("존재하지 않는 유저로 좋아요를 누르면 예외가 발생한다.")
         @Test
         void fails_whenUserNotFound() {

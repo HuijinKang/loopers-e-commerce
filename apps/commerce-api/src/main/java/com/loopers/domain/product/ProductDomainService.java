@@ -21,6 +21,12 @@ public class ProductDomainService {
                 () -> new CoreException(ErrorType.NOT_FOUND, "상품을 찾을 수 없습니다."));
     }
 
+    @Transactional
+    public ProductModel getProductForUpdate(Long productId) {
+        return productRepository.findByIdForUpdate(productId).orElseThrow(
+                () -> new CoreException(ErrorType.NOT_FOUND, "상품을 찾을 수 없습니다."));
+    }
+
     @Transactional(readOnly = true)
     public List<ProductModel> getProducts(int page, int size, ProductSortType sortType, ProductStatus status, Long brandId) {
         return productRepository.search(page, size, sortType, status, brandId);
