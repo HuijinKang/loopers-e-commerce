@@ -8,3 +8,9 @@ CREATE INDEX idx_products_brand_status_like
 
 CREATE INDEX idx_products_like_desc
   ON products (like_count DESC, id);
+
+-- Drop Indexes (rollback)
+DROP INDEX idx_products_brand_status_like ON products;
+DROP INDEX idx_products_like_desc ON products;
+
+SHOW INDEX FROM products;

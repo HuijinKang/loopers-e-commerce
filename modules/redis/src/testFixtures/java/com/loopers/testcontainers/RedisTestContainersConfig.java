@@ -13,7 +13,7 @@ public class RedisTestContainersConfig {
     public RedisTestContainersConfig() {
         System.setProperty("datasource.redis.database", "0");
         System.setProperty("datasource.redis.master.host", redisContainer.getHost());
-        System.setProperty("datasource.redis.host.port", redisContainer.getFirstMappedPort().toString());
+        System.setProperty("datasource.redis.master.port", redisContainer.getFirstMappedPort().toString());
         System.setProperty("datasource.redis.replicas[0].host", redisContainer.getHost());
         System.setProperty("datasource.redis.replicas[0].port", redisContainer.getFirstMappedPort().toString());
     }
