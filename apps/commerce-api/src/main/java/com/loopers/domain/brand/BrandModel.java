@@ -14,11 +14,16 @@ import lombok.NoArgsConstructor;
 public class BrandModel extends BaseEntity {
 
     private String name;
+
     private Boolean isActive;
 
     public BrandModel(String name) {
         this.name = name;
         this.isActive = true;
+    }
+
+    public static BrandModel of(String name) {
+        return new BrandModel(name);
     }
 
     public void deactivate() {

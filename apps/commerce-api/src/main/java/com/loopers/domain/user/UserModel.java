@@ -15,28 +15,28 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserModel extends BaseEntity {
 
-    @Column(name = "user_id", unique = true)
-    private String userId;
+    private String email;
     private String name;
     private Gender gender;
     private LocalDate birth;
-    private String email;
 
-    public UserModel(String userId, String name, Gender gender, String birth, String email) {
-        this.userId = UserValidator.validateUserId(userId);
+    public UserModel(String email, String name, Gender gender, String birth) {
+        this.email = UserValidator.validateEmail(email);
         this.name = UserValidator.validateName(name);
         this.gender = UserValidator.validateGender(gender);
         this.birth = UserValidator.validateBirth(birth);
-        this.email = UserValidator.validateEmail(email);
+    }
+
+    public static UserModel of(String email, String name, Gender gender, String birth) {
+        return new UserModel(email, name, gender, birth);
     }
 
     public static UserModel from(UserV1Dto.UserRequest request) {
         return new UserModel(
-                request.userId(),
+                request.email(),
                 request.name(),
                 request.gender(),
-                request.birth(),
-                request.email()
+                request.birth()
         );
     }
 }

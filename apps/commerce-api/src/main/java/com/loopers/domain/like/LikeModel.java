@@ -20,7 +20,7 @@ public class LikeModel extends BaseEntity {
         this.productId = productId;
     }
 
-    public static LikeModel from(Long userId, Long productId) {
+    public static LikeModel of(Long userId, Long productId) {
         return new LikeModel(userId, productId);
     }
 }

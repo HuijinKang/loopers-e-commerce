@@ -18,18 +18,10 @@ public class LikeFacade {
     private final ProductDomainService productDomainService;
 
     @Transactional
-    public void toggleLike(String userId, Long productId) {
-        UserModel user = userDomainService.getUser(userId);
+    public void toggleLike(String email, Long productId) {
+        UserModel user = userDomainService.getUser(email);
         ProductModel product = productDomainService.getProduct(productId);
 
         likeDomainService.toggleLike(user, product);
-    }
-
-    @Transactional(readOnly = true)
-    public boolean isLiked(String userId, Long productId) {
-        UserModel user = userDomainService.getUser(userId);
-        ProductModel product = productDomainService.getProduct(productId);
-
-        return likeDomainService.isLiked(user.getId(), product.getId());
     }
 }
