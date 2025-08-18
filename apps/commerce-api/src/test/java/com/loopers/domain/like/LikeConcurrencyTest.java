@@ -4,6 +4,7 @@ import com.loopers.application.like.LikeFacade;
 import com.loopers.domain.brand.BrandModel;
 import com.loopers.domain.brand.BrandRepository;
 import com.loopers.domain.product.ProductModel;
+import com.loopers.domain.product.ProductStatus;
 import com.loopers.domain.product.ProductRepository;
 import com.loopers.domain.user.Gender;
 import com.loopers.domain.user.UserModel;
@@ -36,12 +37,12 @@ class LikeConcurrencyTest {
     @AfterEach
     void tearDown() { databaseCleanUp.truncateAllTables(); }
 
-    @DisplayName("50명이 동시에 좋아요를 눌러도 총 좋아요 수가 정확하다")
+    @DisplayName("50명이 동시에 좋아요를 눌러도 총 좋아요 수와 like 테이블 상태가 일치한다")
     @Test
     void likeCountAccurate_whenConcurrentLikes() throws InterruptedException {
         // arrange
         BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-        ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10_000L, 10));
+        ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10_000L, 10, ProductStatus.ON_SALE));
         List<UserModel> users = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
             users.add(userJpaRepository.save(UserModel.of("like-"+i+"@test.com", "U"+i, Gender.MALE, "1990-01-01")));
@@ -65,9 +66,12 @@ class LikeConcurrencyTest {
         executor.shutdown();
 
         // assert
-        long count = users.stream()
+        long likedRows = users.stream()
                 .filter(u -> likeRepository.existsByUserIdAndProductId(u.getId(), product.getId()))
                 .count();
-        assertThat(count).isEqualTo(50);
+        assertThat(likedRows).isEqualTo(50);
+
+        ProductModel refreshed = productRepository.findById(product.getId()).orElseThrow();
+        assertThat(refreshed.getLikeCount()).isEqualTo(50);
     }
 }

@@ -3,6 +3,7 @@ package com.loopers.interfaces.api.like;
 import com.loopers.domain.brand.BrandModel;
 import com.loopers.domain.brand.BrandRepository;
 import com.loopers.domain.product.ProductModel;
+import com.loopers.domain.product.ProductStatus;
 import com.loopers.domain.product.ProductRepository;
 import com.loopers.domain.user.Gender;
 import com.loopers.domain.user.UserModel;
@@ -48,7 +49,7 @@ class LikeV1ApiE2ETest {
             // arrange
             UserModel user = userJpaRepository.save(UserModel.of("like@test.com", "유저", Gender.MALE, "2000-01-01"));
             BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 1000L, 10));
+            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 1000L, 10, ProductStatus.ON_SALE));
 
             HttpHeaders headers = new HttpHeaders();
             headers.set("X-USER-ID", user.getEmail());
@@ -104,8 +105,8 @@ class LikeV1ApiE2ETest {
             // arrange
             UserModel user = userJpaRepository.save(UserModel.of("like-list@test.com", "유저", Gender.MALE, "2000-01-01"));
             BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-            ProductModel p1 = productRepository.save(ProductModel.of(brand.getId(), "상품1", 1000L, 10));
-            ProductModel p2 = productRepository.save(ProductModel.of(brand.getId(), "상품2", 1000L, 10));
+            ProductModel p1 = productRepository.save(ProductModel.of(brand.getId(), "상품1", 1000L, 10, ProductStatus.ON_SALE));
+            ProductModel p2 = productRepository.save(ProductModel.of(brand.getId(), "상품2", 1000L, 10, ProductStatus.ON_SALE));
 
             HttpHeaders headers = new HttpHeaders();
             headers.set("X-USER-ID", user.getEmail());

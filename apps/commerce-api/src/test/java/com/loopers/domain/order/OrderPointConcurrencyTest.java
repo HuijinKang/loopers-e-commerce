@@ -6,6 +6,7 @@ import com.loopers.domain.brand.BrandRepository;
 import com.loopers.domain.point.PointDomainService;
 import com.loopers.domain.point.PointRepository;
 import com.loopers.domain.product.ProductModel;
+import com.loopers.domain.product.ProductStatus;
 import com.loopers.domain.product.ProductRepository;
 import com.loopers.domain.user.Gender;
 import com.loopers.domain.user.UserModel;
@@ -48,7 +49,7 @@ class OrderPointConcurrencyTest {
         // arrange
         UserModel user = userJpaRepository.save(UserModel.of("point-con@test.com", "포인트유저", Gender.MALE, "1990-01-01"));
         BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-        ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10_000L, 20));
+        ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "상품", 10_000L, 20, ProductStatus.ON_SALE));
 
         // 총 보유 15_000 충전 → 각 주문은 10_000 사용 요청. 동시 2건이면 1건 실패 기대
         pointDomainService.chargePoint(user, 15_000L);

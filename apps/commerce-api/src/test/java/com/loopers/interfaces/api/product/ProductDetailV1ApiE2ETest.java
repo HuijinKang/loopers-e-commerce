@@ -3,6 +3,7 @@ package com.loopers.interfaces.api.product;
 import com.loopers.domain.brand.BrandModel;
 import com.loopers.domain.brand.BrandRepository;
 import com.loopers.domain.product.ProductModel;
+import com.loopers.domain.product.ProductStatus;
 import com.loopers.domain.product.ProductRepository;
 import com.loopers.interfaces.api.ApiResponse;
 import com.loopers.utils.DatabaseCleanUp;
@@ -43,7 +44,7 @@ class ProductDetailV1ApiE2ETest {
         void returnsProduct_whenExists() {
             // arrange
             BrandModel brand = brandRepository.save(BrandModel.of("브랜드"));
-            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "스니커즈", 120000L, 10));
+            ProductModel product = productRepository.save(ProductModel.of(brand.getId(), "스니커즈", 120000L, 10, ProductStatus.ON_SALE));
             ParameterizedTypeReference<ApiResponse<ProductV1Dto.ProductSummaryResponse>> type = new ParameterizedTypeReference<>() {};
 
             // act
