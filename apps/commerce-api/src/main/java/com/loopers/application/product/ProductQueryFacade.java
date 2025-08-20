@@ -1,7 +1,7 @@
 package com.loopers.application.product;
 
 import com.loopers.application.product.cache.ProductCacheKey;
-import com.loopers.application.product.cache.ProductCacheService;
+import com.loopers.application.product.cache.ProductCachePort;
 import com.loopers.domain.product.ProductDomainService;
 import com.loopers.domain.product.ProductSortType;
 import com.loopers.domain.product.ProductStatus;
@@ -17,12 +17,12 @@ import java.util.List;
 public class ProductQueryFacade {
 
     private final ProductDomainService productDomainService;
-    private final ProductCacheService productCacheService;
+    private final ProductCachePort productCachePort;
 
     @Transactional(readOnly = true)
     public List<ProductV1Dto.ProductSummaryResponse> getProducts(int page, int size, ProductSortType sortType, ProductStatus status, Long brandId) {
-        String key = ProductCacheKey.list(page, size, sortType, status, brandId);
-        return productCacheService.getProductList(
+        String key = ProductCacheKey.buildListKey(page, size, sortType, status, brandId);
+        return productCachePort.getProductList(
                 key,
                 () -> productDomainService.getProducts(page, size, sortType, status, brandId)
                         .stream()
@@ -34,7 +34,7 @@ public class ProductQueryFacade {
     @Transactional(readOnly = true)
     public ProductV1Dto.ProductSummaryResponse getProduct(Long productId) {
         String key = ProductCacheKey.detail(productId);
-        return productCacheService.getProduct(
+        return productCachePort.getProduct(
                 key,
                 () -> ProductV1Dto.ProductSummaryResponse.from(productDomainService.getProduct(productId))
         );

@@ -1,7 +1,8 @@
-package com.loopers.application.product.cache;
+package com.loopers.infrastructure.cache;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.loopers.application.product.cache.ProductCachePort;
 import com.loopers.interfaces.api.product.ProductV1Dto;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @Component
-public class ProductCacheService {
+public class ProductCacheRedisAdapter implements ProductCachePort {
 
     private static final Duration TTL_DETAIL = Duration.ofSeconds(120);
     private static final Duration TTL_LIST = Duration.ofSeconds(30);
@@ -20,11 +21,12 @@ public class ProductCacheService {
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper;
 
-    public ProductCacheService(RedisTemplate<String, String> redisTemplate, ObjectMapper objectMapper) {
+    public ProductCacheRedisAdapter(RedisTemplate<String, String> redisTemplate, ObjectMapper objectMapper) {
         this.redisTemplate = redisTemplate;
         this.objectMapper = objectMapper;
     }
 
+    @Override
     public ProductV1Dto.ProductSummaryResponse getProduct(String key, Supplier<ProductV1Dto.ProductSummaryResponse> loader) {
         try {
             String cached = redisTemplate.opsForValue().get(key);
@@ -41,12 +43,12 @@ public class ProductCacheService {
         return loaded;
     }
 
+    @Override
     public List<ProductV1Dto.ProductSummaryResponse> getProductList(String key, Supplier<List<ProductV1Dto.ProductSummaryResponse>> loader) {
         try {
             String cached = redisTemplate.opsForValue().get(key);
             if (cached != null) {
-                return objectMapper.readValue(cached, new TypeReference<>() {
-                });
+                return objectMapper.readValue(cached, new TypeReference<>() {});
             }
         } catch (Exception ignored) {}
 
@@ -59,6 +61,7 @@ public class ProductCacheService {
         return loaded;
     }
 
+    @Override
     public void evict(String key) {
         try {
             redisTemplate.delete(key);

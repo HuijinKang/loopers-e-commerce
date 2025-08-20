@@ -1,5 +1,5 @@
 ### 결제 요청
-POST {{pg-simulator}}/api/v1/payments
+POST localhost:8082/api/v1/payments
 X-USER-ID: 135135
 Content-Type: application/json
 
