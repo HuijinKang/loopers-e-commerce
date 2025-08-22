@@ -43,6 +43,20 @@ resilience4j:
         wait-duration-in-open-state: 10s
         slow-call-duration-threshold: 2s
         slow-call-rate-threshold: 50
+  retry:
+    instances:
+      pgRetry:
+        max-attempts: 3
+        wait-duration: 1s
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 1000
+        read-timeout: 3000
 
 ---
 spring:

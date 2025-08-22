@@ -6,9 +6,11 @@ import com.loopers.application.payment.dto.PgPaymentResult;
 import com.loopers.infrastructure.payment.feign.PgFeignClient;
 import com.loopers.infrastructure.payment.feign.dto.PgFeignDtos;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -23,6 +25,7 @@ public class PgPaymentRestAdapter implements PgPaymentPort {
 
     @Override
     @CircuitBreaker(name = "pg", fallbackMethod = "requestFallback")
+    @Retry(name = "pgRetry")
     public PgPaymentResult requestPayment(PgPaymentCommand.CreateTransaction command) {
         PgFeignDtos.PaymentRequest req = new PgFeignDtos.PaymentRequest(
                 command.orderId(), PgFeignDtos.CardTypeDto.valueOf(command.cardType()), command.cardNo(), command.amount(), command.callbackUrl()
@@ -34,6 +37,7 @@ public class PgPaymentRestAdapter implements PgPaymentPort {
 
     @Override
     @CircuitBreaker(name = "pg", fallbackMethod = "getByTransactionFallback")
+    @Retry(name = "pgRetry")
     public PgPaymentResult getPaymentByTransactionKey(String transactionKey) {
         PgFeignDtos.ApiResponse<PgFeignDtos.TransactionDetailResponse> resp = feign.getTransaction("system", transactionKey);
         PgFeignDtos.TransactionDetailResponse d = resp.data();
@@ -42,6 +46,7 @@ public class PgPaymentRestAdapter implements PgPaymentPort {
 
     @Override
     @CircuitBreaker(name = "pg", fallbackMethod = "getByOrderFallback")
+    @Retry(name = "pgRetry")
     public List<PgPaymentResult> getPaymentsByOrderId(String orderId) {
         PgFeignDtos.ApiResponse<PgFeignDtos.OrderResponse> resp = feign.getTransactionsByOrder("system", orderId);
         return resp.data().transactions().stream()
@@ -65,7 +70,7 @@ public class PgPaymentRestAdapter implements PgPaymentPort {
         return PgPaymentResult.of(transactionKey, null, null, null, 0L, PgPaymentResult.Status.PENDING, "fallback: " + t.getClass().getSimpleName());
     }
 
-    private java.util.List<PgPaymentResult> getByOrderFallback(String orderId, Throwable t) {
-        return java.util.Collections.emptyList();
+    private List<PgPaymentResult> getByOrderFallback(String orderId, Throwable t) {
+        return Collections.emptyList();
     }
 }

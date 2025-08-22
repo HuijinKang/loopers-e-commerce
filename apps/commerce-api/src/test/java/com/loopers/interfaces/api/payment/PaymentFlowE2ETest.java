@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 @SpringBootTest
 class PaymentFlowE2ETest {
 
@@ -22,7 +24,7 @@ class PaymentFlowE2ETest {
         // arrange
         UserModel user = userJpaRepository.save(UserModel.of("e2e@test.com", "유저", Gender.MALE, "2000-01-01"));
         OrderV1Dto.CreateOrderRequest req = new OrderV1Dto.CreateOrderRequest(
-                "서울시 구로구", null, 0L, java.util.List.of(), new OrderV1Dto.CreateOrderRequest.PaymentRequest("SAMSUNG", "1234-5678-9814-1451")
+                "서울시 구로구", null, 0L, List.of(), new OrderV1Dto.CreateOrderRequest.PaymentRequest("SAMSUNG", "1234-5678-9814-1451")
         );
 
         // act

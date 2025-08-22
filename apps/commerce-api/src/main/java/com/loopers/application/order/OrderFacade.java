@@ -44,7 +44,7 @@ public class OrderFacade {
                 items
         );
         Long orderId = placeOrder(command);
-        // 트랜잭션 밖 비동기 결제 요청: 저장된 주문의 할인 금액 사용
+        // 트랜잭션 밖 비동기 결제 요청
         CompletableFuture.runAsync(() -> requestPgPaymentWithPersistedAmount(user.getId(), orderNo, request));
         return orderId;
     }
@@ -78,10 +78,10 @@ public class OrderFacade {
 
         // 4. 주문 아이템 생성 및 저장
         List<OrderItemModel> orderItems = orderItemDomainService.createItems(order, command.items());
-        // 재고 차감은 락 기반으로 처리
+
         productDomainService.deductStock(orderItems);
 
-        // 6. 포인트 차감 (선차감 방식 유지)
+        // 6. 포인트 차감
         if (command.usePoint() > 0) {
             pointDomainService.deductPoint(command.userId(), command.usePoint());
         }

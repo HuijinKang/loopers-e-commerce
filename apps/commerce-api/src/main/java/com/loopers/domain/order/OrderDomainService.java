@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -52,5 +53,10 @@ public class OrderDomainService {
     @Transactional(readOnly = true)
     public List<OrderModel> getUserOrders(Long userId) {
         return orderRepository.findByUserId(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderModel> findPendingOrdersUpdatedBefore(ZonedDateTime updatedBefore) {
+        return orderRepository.findPendingOrdersUpdatedBefore(updatedBefore);
     }
 }
