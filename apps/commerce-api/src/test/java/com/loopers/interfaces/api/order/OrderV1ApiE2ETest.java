@@ -63,7 +63,8 @@ class OrderV1ApiE2ETest {
                     "서울시 강남구",
                     null,
                     0L,
-                    List.of(new OrderV1Dto.CreateOrderRequest.OrderItemRequest(product.getId(), Option.of("RED","M"), 1, 10000L))
+                    List.of(new OrderV1Dto.CreateOrderRequest.OrderItemRequest(product.getId(), Option.of("RED","M"), 1, 10000L)),
+                    new OrderV1Dto.CreateOrderRequest.PaymentRequest("SAMSUNG", "1234-5678-9814-1451")
             );
 
             HttpHeaders headers = new HttpHeaders();
@@ -99,7 +100,8 @@ class OrderV1ApiE2ETest {
                     "서울시",
                     9_999_999L, // 존재하지 않는 발급 쿠폰 ID
                     0L,
-                    List.of(new OrderV1Dto.CreateOrderRequest.OrderItemRequest(product.getId(), Option.of("BLACK","L"), 1, 10000L))
+                    List.of(new OrderV1Dto.CreateOrderRequest.OrderItemRequest(product.getId(), Option.of("BLACK","L"), 1, 10000L)),
+                    new OrderV1Dto.CreateOrderRequest.PaymentRequest("SAMSUNG", "1234-5678-9814-1451")
             );
 
             HttpHeaders headers = new HttpHeaders();
@@ -132,7 +134,8 @@ class OrderV1ApiE2ETest {
                     "서울시",
                     issued.getId(),
                     0L,
-                    List.of(new OrderV1Dto.CreateOrderRequest.OrderItemRequest(product.getId(), Option.of("BLACK","L"), 1, 10000L))
+                    List.of(new OrderV1Dto.CreateOrderRequest.OrderItemRequest(product.getId(), Option.of("BLACK","L"), 1, 10000L)),
+                    new OrderV1Dto.CreateOrderRequest.PaymentRequest("SAMSUNG", "1234-5678-9814-1451")
             );
 
             HttpHeaders headers = new HttpHeaders();
@@ -166,7 +169,8 @@ class OrderV1ApiE2ETest {
                     "서울시",
                     issued.getId(),
                     0L,
-                    List.of(new OrderV1Dto.CreateOrderRequest.OrderItemRequest(product.getId(), Option.of("BLACK","L"), 1, 10000L))
+                    List.of(new OrderV1Dto.CreateOrderRequest.OrderItemRequest(product.getId(), Option.of("BLACK","L"), 1, 10000L)),
+                    new OrderV1Dto.CreateOrderRequest.PaymentRequest("SAMSUNG", "1234-5678-9814-1451")
             );
 
             HttpHeaders headers = new HttpHeaders();
@@ -194,7 +198,8 @@ class OrderV1ApiE2ETest {
                     "서울시",
                     null,
                     1_000L, // 보유보다 큰 사용 포인트
-                    List.of(new OrderV1Dto.CreateOrderRequest.OrderItemRequest(product.getId(), Option.of("BLACK","L"), 1, 10000L))
+                    List.of(new OrderV1Dto.CreateOrderRequest.OrderItemRequest(product.getId(), Option.of("BLACK","L"), 1, 10000L)),
+                    new OrderV1Dto.CreateOrderRequest.PaymentRequest("SAMSUNG", "1234-5678-9814-1451")
             );
             HttpHeaders headers = new HttpHeaders();
             headers.set("X-USER-ID", user.getEmail());
@@ -222,7 +227,8 @@ class OrderV1ApiE2ETest {
                     "서울시",
                     null,
                     0L,
-                    List.of(new OrderV1Dto.CreateOrderRequest.OrderItemRequest(product.getId(), Option.of("BLACK","L"), 2, 10000L))
+                    List.of(new OrderV1Dto.CreateOrderRequest.OrderItemRequest(product.getId(), Option.of("BLACK","L"), 2, 10000L)),
+                    new OrderV1Dto.CreateOrderRequest.PaymentRequest("SAMSUNG", "1234-5678-9814-1451")
             );
             HttpHeaders headers = new HttpHeaders();
             headers.set("X-USER-ID", user.getEmail());
@@ -248,7 +254,8 @@ class OrderV1ApiE2ETest {
                     "서울시",
                     null,
                     1000L,
-                    List.of(new OrderV1Dto.CreateOrderRequest.OrderItemRequest(product.getId(), Option.of("BLACK","L"), 1, 10000L))
+                    List.of(new OrderV1Dto.CreateOrderRequest.OrderItemRequest(product.getId(), Option.of("BLACK","L"), 1, 10000L)),
+                    new OrderV1Dto.CreateOrderRequest.PaymentRequest("SAMSUNG", "1234-5678-9814-1451")
             );
             HttpHeaders headers = new HttpHeaders();
             headers.set("X-USER-ID", user.getEmail());
@@ -271,7 +278,8 @@ class OrderV1ApiE2ETest {
                     "서울시",
                     null,
                     0L,
-                    List.of()
+                    List.of(),
+                    new OrderV1Dto.CreateOrderRequest.PaymentRequest("SAMSUNG", "1234-5678-9814-1451")
             );
 
             HttpEntity<OrderV1Dto.CreateOrderRequest> entity = new HttpEntity<>(request);

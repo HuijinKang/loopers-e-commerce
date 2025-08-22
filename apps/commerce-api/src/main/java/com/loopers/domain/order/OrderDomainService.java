@@ -40,6 +40,11 @@ public class OrderDomainService {
     }
 
     @Transactional(readOnly = true)
+    public OrderModel getOrderByOrderNo(String orderNo) {
+        return orderRepository.findByOrderNo(orderNo).orElseThrow();
+    }
+
+    @Transactional(readOnly = true)
     public List<OrderItemModel> getOrderItems(Long orderId) {
         return orderItemRepository.findByOrderId(orderId);
     }

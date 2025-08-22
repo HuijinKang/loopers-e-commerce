@@ -8,4 +8,5 @@ public interface OrderRepository {
     Optional<OrderModel> findById(Long id);
     List<OrderModel> findByUserId(Long userId);
     long countByUserId(Long userId);
+    Optional<OrderModel> findByOrderNo(String orderNo);
 }
