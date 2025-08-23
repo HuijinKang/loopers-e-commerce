@@ -21,7 +21,7 @@ public class PaymentSyncScheduler {
 
     @Scheduled(fixedDelay = 60000)
     public void syncPendingOrders() {
-        java.time.ZonedDateTime threshold = ZonedDateTime.now().minusMinutes(1);
+        ZonedDateTime threshold = ZonedDateTime.now().minusMinutes(1);
         List<OrderModel> pending = orderDomainService.findPendingOrdersUpdatedBefore(threshold);
         for (OrderModel order : pending) {
             if (order.getOrderStatus() == OrderStatus.PENDING) {
