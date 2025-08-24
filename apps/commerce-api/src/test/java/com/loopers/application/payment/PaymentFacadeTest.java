@@ -34,7 +34,7 @@ class PaymentFacadeTest {
             facade.handleCallback("ORD-1", PgPaymentResult.Status.SUCCESS);
 
             // assert
-            verify(pending, times(1)).updateOrderStatus(OrderStatus.PROCESSING);
+            verify(pending, times(1)).process();
         }
 
         @Test
@@ -53,7 +53,8 @@ class PaymentFacadeTest {
             facade.handleCallback("ORD-2", PgPaymentResult.Status.SUCCESS);
 
             // assert
-            verify(shipped, never()).updateOrderStatus(any());
+            verify(shipped, never()).process();
+            verify(shipped, never()).cancel();
         }
     }
 
@@ -81,7 +82,7 @@ class PaymentFacadeTest {
             facade.syncByOrderId("ORD-3");
 
             // assert
-            verify(pending, times(1)).updateOrderStatus(OrderStatus.PROCESSING);
+            verify(pending, times(1)).process();
         }
     }
 }

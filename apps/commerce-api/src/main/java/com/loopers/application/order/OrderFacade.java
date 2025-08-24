@@ -9,6 +9,7 @@ import com.loopers.domain.user.UserModel;
 import com.loopers.application.payment.PgPaymentPort;
 import com.loopers.application.payment.dto.PgPaymentCommand;
 import com.loopers.interfaces.api.order.OrderV1Dto;
+import com.loopers.application.payment.dto.PgPaymentResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -101,8 +102,16 @@ public class OrderFacade {
                 "http://localhost:8080/api/v1/payments/callback"
         );
         try {
-            pgPaymentPort.requestPayment(pgCommand);
-        } catch (Exception ignored) {
+            PgPaymentResult result = pgPaymentPort.requestPayment(pgCommand);
+            // 요청 자체가 수락되지 않아 transactionKey가 없으면 즉시 취소 처리 (영구 PENDING 방지)
+            if (result == null || result.getTransactionKey() == null) {
+                try { orderDomainService.cancelIfPending(orderNo); } catch (Exception ignore) {}
+            }
+        } catch (Exception ex) {
+            // 초기 결제 요청이 즉시 실패한 경우, 콜백으로 회복될 가능성이 낮다면 주문을 취소하여 영구 PENDING을 방지.
+            try {
+                orderDomainService.cancelIfPending(orderNo);
+            } catch (Exception ignore) {}
         }
     }
 }

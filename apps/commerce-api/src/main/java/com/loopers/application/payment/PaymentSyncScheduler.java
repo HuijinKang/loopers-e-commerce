@@ -25,7 +25,13 @@ public class PaymentSyncScheduler {
         List<OrderModel> pending = orderDomainService.findPendingOrdersUpdatedBefore(threshold);
         for (OrderModel order : pending) {
             if (order.getOrderStatus() == OrderStatus.PENDING) {
-                try { paymentFacade.syncByOrderId(order.getOrderNo()); } catch (Exception ignored) {}
+                try {
+                    OrderStatus status = paymentFacade.syncByOrderId(order.getOrderNo());
+                    if (status == OrderStatus.PENDING) {
+                        // 일정 시간 경과에도 거래 내역이 없거나 미확정이면 주문을 취소하여 영구 대기를 방지.
+                        orderDomainService.cancelIfPending(order.getOrderNo());
+                    }
+                } catch (Exception ignored) {}
             }
         }
     }

@@ -59,4 +59,12 @@ public class OrderDomainService {
     public List<OrderModel> findPendingOrdersUpdatedBefore(ZonedDateTime updatedBefore) {
         return orderRepository.findPendingOrdersUpdatedBefore(updatedBefore);
     }
+
+    @Transactional
+    public void cancelIfPending(String orderNo) {
+        OrderModel order = orderRepository.findByOrderNo(orderNo).orElseThrow();
+        if (order.getOrderStatus() == OrderStatus.PENDING) {
+            order.cancel();
+        }
+    }
 }

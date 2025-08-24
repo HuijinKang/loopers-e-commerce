@@ -4,6 +4,7 @@ import com.loopers.application.payment.dto.PgPaymentResult;
 import com.loopers.domain.order.OrderDomainService;
 import com.loopers.domain.order.OrderModel;
 import com.loopers.domain.order.OrderStatus;
+import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,10 +14,11 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class PaymentFacade {
 
     private final OrderDomainService orderDomainService;
-    private final com.loopers.application.payment.PgPaymentPort pgPaymentPort;
+    private final PgPaymentPort pgPaymentPort;
 
     @Transactional
     public void handleCallback(String orderId, PgPaymentResult.Status status) {
@@ -24,10 +26,16 @@ public class PaymentFacade {
         if (order.getOrderStatus() != OrderStatus.PENDING) {
             return;
         }
-        if (status == PgPaymentResult.Status.SUCCESS) {
-            order.updateOrderStatus(OrderStatus.PROCESSING);
+        if (status == null || status == PgPaymentResult.Status.PENDING) {
+            if (status == null) {
+                log.warn("handleCallback ignored: null status for orderNo={}", orderId);
+            }
+        } else if (status == PgPaymentResult.Status.SUCCESS) {
+            order.process();
         } else if (status == PgPaymentResult.Status.FAILED) {
-            order.updateOrderStatus(OrderStatus.CANCELED);
+            order.cancel();
+        } else {
+            log.warn("handleCallback ignored: unhandled status={} for orderNo={}", status, orderId);
         }
     }
 
@@ -45,9 +53,9 @@ public class PaymentFacade {
                 .orElse(PgPaymentResult.Status.PENDING);
 
         if (finalStatus == PgPaymentResult.Status.SUCCESS) {
-            order.updateOrderStatus(OrderStatus.PROCESSING);
+            order.process();
         } else if (finalStatus == PgPaymentResult.Status.FAILED) {
-            order.updateOrderStatus(OrderStatus.CANCELED);
+            order.cancel();
         }
         return order.getOrderStatus();
     }

@@ -44,7 +44,11 @@ public class OrderModel extends BaseEntity {
         return new OrderModel(orderNo, userId, totalAmount, discountedAmount, usedCouponId, shippingAddress, orderStatus);
     }
 
-    public void updateOrderStatus(OrderStatus newStatus) {
-        this.orderStatus = newStatus;
+    public void process() {
+        this.orderStatus = OrderStatus.PROCESSING;
+    }
+
+    public void cancel() {
+        this.orderStatus = OrderStatus.CANCELED;
     }
 }
