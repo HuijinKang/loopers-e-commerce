@@ -8,6 +8,9 @@ import com.loopers.domain.product.ProductModel;
 import com.loopers.domain.user.UserModel;
 import com.loopers.domain.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
+import com.loopers.application.like.event.ProductLikedEvent;
+import com.loopers.application.audit.UserActionEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +22,7 @@ public class LikeFacade {
     private final UserDomainService userDomainService;
     private final ProductDomainService productDomainService;
     private final ProductCachePort productCachePort;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public void toggleLike(String email, Long productId) {
@@ -27,5 +31,7 @@ public class LikeFacade {
 
         likeDomainService.toggleLike(user, product);
         productCachePort.evict(ProductCacheKey.detail(productId));
+        eventPublisher.publishEvent(ProductLikedEvent.of(user.getId(), productId, true));
+        eventPublisher.publishEvent(UserActionEvent.of("PRODUCT_LIKE_TOGGLED", user.getEmail(), String.valueOf(productId), "liked=true"));
     }
 }
