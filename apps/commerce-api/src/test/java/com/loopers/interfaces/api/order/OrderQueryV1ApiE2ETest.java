@@ -48,7 +48,8 @@ class OrderQueryV1ApiE2ETest {
                 null,
                 usePoint,
                 List.of(new OrderV1Dto.CreateOrderRequest.OrderItemRequest(
-                        product.getId(), Option.of("BLK","L"), 1, product.getPrice()))
+                        product.getId(), Option.of("BLK","L"), 1, product.getPrice())),
+                new OrderV1Dto.CreateOrderRequest.PaymentRequest("SAMSUNG", "1234-5678-9814-1451")
         );
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-USER-ID", user.getEmail());

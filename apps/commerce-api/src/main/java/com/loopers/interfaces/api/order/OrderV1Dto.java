@@ -10,8 +10,13 @@ public class OrderV1Dto {
             String shippingAddress,
             Long issuedCouponId, // nullable
             long usePoint,
-            List<OrderItemRequest> items
+            List<OrderItemRequest> items,
+            PaymentRequest payment
     ) {
+        public record PaymentRequest(
+                String cardType,
+                String cardNo
+        ) {}
         public record OrderItemRequest(
                 Long productId,
                 Option option,

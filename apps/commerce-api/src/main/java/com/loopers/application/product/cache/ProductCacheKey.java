@@ -11,7 +11,7 @@ public final class ProductCacheKey {
         return "product:detail:" + productId;
     }
 
-    public static String list(Integer page, Integer size, ProductSortType sortType, ProductStatus status, Long brandId) {
+    public static String buildListKey(Integer page, Integer size, ProductSortType sortType, ProductStatus status, Long brandId) {
         String brand = brandId == null ? "all" : brandId.toString();
         String stat = status == null ? "all" : status.name();
         String sort = sortType == null ? "latest" : sortType.name();

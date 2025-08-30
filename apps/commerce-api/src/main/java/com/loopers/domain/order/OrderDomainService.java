@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -40,6 +41,11 @@ public class OrderDomainService {
     }
 
     @Transactional(readOnly = true)
+    public OrderModel getOrderByOrderNo(String orderNo) {
+        return orderRepository.findByOrderNo(orderNo).orElseThrow();
+    }
+
+    @Transactional(readOnly = true)
     public List<OrderItemModel> getOrderItems(Long orderId) {
         return orderItemRepository.findByOrderId(orderId);
     }
@@ -47,5 +53,18 @@ public class OrderDomainService {
     @Transactional(readOnly = true)
     public List<OrderModel> getUserOrders(Long userId) {
         return orderRepository.findByUserId(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderModel> findPendingOrdersUpdatedBefore(ZonedDateTime updatedBefore) {
+        return orderRepository.findPendingOrdersUpdatedBefore(updatedBefore);
+    }
+
+    @Transactional
+    public void cancelIfPending(String orderNo) {
+        OrderModel order = orderRepository.findByOrderNo(orderNo).orElseThrow();
+        if (order.getOrderStatus() == OrderStatus.PENDING) {
+            order.cancel();
+        }
     }
 }

@@ -6,10 +6,14 @@ import com.loopers.domain.point.PointDomainService;
 import com.loopers.domain.product.ProductDomainService;
 import com.loopers.domain.user.UserDomainService;
 import com.loopers.domain.user.UserModel;
+import com.loopers.application.payment.PgPaymentPort;
+import com.loopers.application.payment.dto.PgPaymentCommand;
 import com.loopers.interfaces.api.order.OrderV1Dto;
+import com.loopers.application.payment.dto.PgPaymentResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.concurrent.CompletableFuture;
 
 import java.util.List;
 
@@ -23,6 +27,7 @@ public class OrderFacade {
     private final ProductDomainService productDomainService;
     private final PointDomainService pointDomainService;
     private final UserDomainService userDomainService;
+    private final PgPaymentPort pgPaymentPort;
 
     @Transactional
     public Long placeOrder(String userId, OrderV1Dto.CreateOrderRequest request) {
@@ -39,7 +44,10 @@ public class OrderFacade {
                 request.usePoint(),
                 items
         );
-        return placeOrder(command);
+        Long orderId = placeOrder(command);
+        // 트랜잭션 밖 비동기 결제 요청
+        CompletableFuture.runAsync(() -> requestPgPaymentWithPersistedAmount(user.getId(), orderNo, request));
+        return orderId;
     }
 
     @Transactional
@@ -71,7 +79,7 @@ public class OrderFacade {
 
         // 4. 주문 아이템 생성 및 저장
         List<OrderItemModel> orderItems = orderItemDomainService.createItems(order, command.items());
-        // 재고 차감은 락 기반으로 처리
+
         productDomainService.deductStock(orderItems);
 
         // 6. 포인트 차감
@@ -80,5 +88,30 @@ public class OrderFacade {
         }
 
         return order.getId();
+    }
+
+    private void requestPgPaymentWithPersistedAmount(Long userId, String orderNo, OrderV1Dto.CreateOrderRequest req) {
+        OrderModel saved = orderDomainService.getOrderByOrderNo(orderNo);
+        long discounted = saved.getDiscountedAmount();
+        PgPaymentCommand.CreateTransaction pgCommand = new PgPaymentCommand.CreateTransaction(
+                String.valueOf(userId),
+                orderNo,
+                req.payment().cardType(),
+                req.payment().cardNo(),
+                discounted,
+                "http://localhost:8080/api/v1/payments/callback"
+        );
+        try {
+            PgPaymentResult result = pgPaymentPort.requestPayment(pgCommand);
+            // 요청 자체가 수락되지 않아 transactionKey가 없으면 즉시 취소 처리 (영구 PENDING 방지)
+            if (result == null || result.getTransactionKey() == null) {
+                try { orderDomainService.cancelIfPending(orderNo); } catch (Exception ignore) {}
+            }
+        } catch (Exception ex) {
+            // 초기 결제 요청이 즉시 실패한 경우, 콜백으로 회복될 가능성이 낮다면 주문을 취소하여 영구 PENDING을 방지.
+            try {
+                orderDomainService.cancelIfPending(orderNo);
+            } catch (Exception ignore) {}
+        }
     }
 }
