@@ -1,7 +1,9 @@
 package com.loopers.application.order;
 
-import com.loopers.domain.coupon.IssuedCouponDomainService;
+import com.loopers.application.order.event.OrderPlacedEvent;
+import com.loopers.application.audit.UserActionEvent;
 import com.loopers.domain.order.*;
+import com.loopers.application.coupon.event.OrderCouponUseEvent;
 import com.loopers.domain.point.PointDomainService;
 import com.loopers.domain.product.ProductDomainService;
 import com.loopers.domain.user.UserDomainService;
@@ -11,9 +13,9 @@ import com.loopers.application.payment.dto.PgPaymentCommand;
 import com.loopers.interfaces.api.order.OrderV1Dto;
 import com.loopers.application.payment.dto.PgPaymentResult;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.concurrent.CompletableFuture;
 
 import java.util.List;
 
@@ -23,11 +25,11 @@ public class OrderFacade {
 
     private final OrderDomainService orderDomainService;
     private final OrderItemDomainService orderItemDomainService;
-    private final IssuedCouponDomainService issuedCouponDomainService;
     private final ProductDomainService productDomainService;
     private final PointDomainService pointDomainService;
     private final UserDomainService userDomainService;
     private final PgPaymentPort pgPaymentPort;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public Long placeOrder(String userId, OrderV1Dto.CreateOrderRequest request) {
@@ -45,8 +47,14 @@ public class OrderFacade {
                 items
         );
         Long orderId = placeOrder(command);
-        // 트랜잭션 밖 비동기 결제 요청
-        CompletableFuture.runAsync(() -> requestPgPaymentWithPersistedAmount(user.getId(), orderNo, request));
+        // AFTER_COMMIT 결제 요청 이벤트 발행
+        eventPublisher.publishEvent(OrderPlacedEvent.of(
+                user.getId(),
+                orderNo,
+                request.payment().cardType(),
+                request.payment().cardNo()
+        ));
+        eventPublisher.publishEvent(UserActionEvent.of("ORDER_PLACED", user.getEmail(), orderNo, "items=" + items.size()));
         return orderId;
     }
 
@@ -60,11 +68,7 @@ public class OrderFacade {
         // 2. 쿠폰 할인 적용
         long discountedAmount = totalAmount;
         if (command.issuedCouponId() != null) {
-            discountedAmount = issuedCouponDomainService.applyAndUseWithLock(
-                    command.issuedCouponId(),
-                    command.userId(),
-                    totalAmount
-            );
+            eventPublisher.publishEvent(OrderCouponUseEvent.of(command.orderNo(), command.issuedCouponId(), command.userId(), totalAmount));
         }
 
         // 3. 주문 생성 및 저장
