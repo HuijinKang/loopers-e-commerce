@@ -3,8 +3,8 @@ package com.loopers.application.order;
 import com.loopers.application.order.event.OrderPlacedEvent;
 import com.loopers.application.audit.UserActionEvent;
 import com.loopers.domain.order.*;
-import com.loopers.application.coupon.event.OrderCouponUseEvent;
 import com.loopers.domain.point.PointDomainService;
+import com.loopers.domain.coupon.IssuedCouponDomainService;
 import com.loopers.domain.product.ProductDomainService;
 import com.loopers.domain.user.UserDomainService;
 import com.loopers.domain.user.UserModel;
@@ -27,6 +27,7 @@ public class OrderFacade {
     private final OrderItemDomainService orderItemDomainService;
     private final ProductDomainService productDomainService;
     private final PointDomainService pointDomainService;
+    private final IssuedCouponDomainService issuedCouponDomainService;
     private final UserDomainService userDomainService;
     private final PgPaymentPort pgPaymentPort;
     private final ApplicationEventPublisher eventPublisher;
@@ -68,7 +69,11 @@ public class OrderFacade {
         // 2. 쿠폰 할인 적용
         long discountedAmount = totalAmount;
         if (command.issuedCouponId() != null) {
-            eventPublisher.publishEvent(OrderCouponUseEvent.of(command.orderNo(), command.issuedCouponId(), command.userId(), totalAmount));
+            discountedAmount = issuedCouponDomainService.applyAndUseWithLock(
+                    command.issuedCouponId(),
+                    command.userId(),
+                    totalAmount
+            );
         }
 
         // 3. 주문 생성 및 저장

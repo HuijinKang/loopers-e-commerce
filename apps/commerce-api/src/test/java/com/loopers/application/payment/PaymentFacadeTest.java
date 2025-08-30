@@ -55,7 +55,7 @@ class PaymentFacadeTest {
 			facade.handleCallback("ORD-2", PgPaymentResult.Status.SUCCESS);
 
 			// assert
-			verify(publisher, never()).publishEvent(any(Object.class));;
+			verify(publisher, never()).publishEvent(any(Object.class));
 			verify(shipped, never()).process();
 			verify(shipped, never()).cancel();
 		}
