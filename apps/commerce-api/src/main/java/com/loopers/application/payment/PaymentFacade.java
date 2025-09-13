@@ -6,6 +6,9 @@ import com.loopers.domain.order.OrderModel;
 import com.loopers.domain.order.OrderStatus;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
+import com.loopers.application.payment.event.PaymentResultEvent;
+import com.loopers.application.audit.UserActionEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,24 +22,15 @@ public class PaymentFacade {
 
     private final OrderDomainService orderDomainService;
     private final PgPaymentPort pgPaymentPort;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public void handleCallback(String orderId, PgPaymentResult.Status status) {
         OrderModel order = orderDomainService.getOrderByOrderNo(orderId);
-        if (order.getOrderStatus() != OrderStatus.PENDING) {
-            return;
-        }
-        if (status == null || status == PgPaymentResult.Status.PENDING) {
-            if (status == null) {
-                log.warn("handleCallback ignored: null status for orderNo={}", orderId);
-            }
-        } else if (status == PgPaymentResult.Status.SUCCESS) {
-            order.process();
-        } else if (status == PgPaymentResult.Status.FAILED) {
-            order.cancel();
-        } else {
-            log.warn("handleCallback ignored: unhandled status={} for orderNo={}", status, orderId);
-        }
+        if (order.getOrderStatus() != OrderStatus.PENDING) return;
+        // 상태 변경은 리스너에서 수행
+        eventPublisher.publishEvent(PaymentResultEvent.of(orderId, status));
+        eventPublisher.publishEvent(UserActionEvent.of("PAYMENT_CALLBACK", "system", orderId, String.valueOf(status)));
     }
 
     @Transactional

@@ -8,5 +8,9 @@ public class PgPaymentCommand {
             String cardNo,   // xxxx-xxxx-xxxx-xxxx
             long amount,
             String callbackUrl
-    ) {}
+    ) {
+        public static CreateTransaction of(String userId, String orderId, String cardType, String cardNo, long amount, String callbackUrl) {
+            return new CreateTransaction(userId, orderId, cardType, cardNo, amount, callbackUrl);
+        }
+    }
 }
