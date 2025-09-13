@@ -9,6 +9,8 @@ import com.loopers.interfaces.api.product.ProductV1Dto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
+import com.loopers.application.product.event.ProductViewedEvent;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ public class ProductQueryFacade {
 
     private final ProductDomainService productDomainService;
     private final ProductCachePort productCachePort;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
     public List<ProductV1Dto.ProductSummaryResponse> getProducts(int page, int size, ProductSortType sortType, ProductStatus status, Long brandId) {
@@ -34,9 +37,11 @@ public class ProductQueryFacade {
     @Transactional(readOnly = true)
     public ProductV1Dto.ProductSummaryResponse getProduct(Long productId) {
         String key = ProductCacheKey.detail(productId);
-        return productCachePort.getProduct(
+        ProductV1Dto.ProductSummaryResponse response = productCachePort.getProduct(
                 key,
                 () -> ProductV1Dto.ProductSummaryResponse.from(productDomainService.getProduct(productId))
         );
+        eventPublisher.publishEvent(ProductViewedEvent.of(productId));
+        return response;
     }
 }

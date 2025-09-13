@@ -29,9 +29,10 @@ public class LikeFacade {
         UserModel user = userDomainService.getUser(email);
         ProductModel product = productDomainService.getProductForUpdate(productId);
 
+        boolean liked = !likeDomainService.isLiked(user.getId(), product.getId());
         likeDomainService.toggleLike(user, product);
         productCachePort.evict(ProductCacheKey.detail(productId));
-        eventPublisher.publishEvent(ProductLikedEvent.of(user.getId(), productId, true));
-        eventPublisher.publishEvent(UserActionEvent.of("PRODUCT_LIKE_TOGGLED", user.getEmail(), String.valueOf(productId), "liked=true"));
+        eventPublisher.publishEvent(ProductLikedEvent.of(user.getId(), productId, liked));
+        eventPublisher.publishEvent(UserActionEvent.of("PRODUCT_LIKE_TOGGLED", user.getEmail(), String.valueOf(productId), "liked=" + liked));
     }
 }
