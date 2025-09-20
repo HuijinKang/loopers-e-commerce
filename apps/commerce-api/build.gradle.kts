@@ -13,6 +13,9 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("io.github.resilience4j:resilience4j-spring-boot3")
 
+    // batch
+    implementation("org.springframework.boot:spring-boot-starter-batch")
+
     // querydsl
     annotationProcessor("com.querydsl:querydsl-apt::jakarta")
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")

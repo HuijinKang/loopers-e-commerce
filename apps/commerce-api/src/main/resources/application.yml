@@ -23,6 +23,9 @@ spring:
       - redis.yml
       - logging.yml
       - monitoring.yml
+  batch:
+    job:
+      enabled: false
 
 springdoc:
   use-fqn: true
