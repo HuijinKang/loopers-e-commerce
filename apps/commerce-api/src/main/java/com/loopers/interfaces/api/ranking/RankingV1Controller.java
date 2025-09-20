@@ -1,5 +1,6 @@
 package com.loopers.interfaces.api.ranking;
 
+import com.loopers.application.ranking.RankingPeriods;
 import com.loopers.application.ranking.RankingService;
 import com.loopers.domain.ranking.RankingEntry;
 import lombok.RequiredArgsConstructor;
@@ -23,16 +24,25 @@ public class RankingV1Controller {
     @GetMapping("/top")
     public List<RankingEntry> top(
             @RequestParam @DateTimeFormat(pattern = "yyyyMMdd") LocalDate date,
+            @RequestParam(defaultValue = "daily") String period,
             @RequestParam(defaultValue = "10") int limit
     ) {
-        return rankingService.top(date, limit);
+        return switch (period) {
+            case "weekly" -> rankingService.topWeekly(RankingPeriods.toYearWeek(date), limit);
+            case "monthly" -> rankingService.topMonthly(RankingPeriods.toYearMonth(date), limit);
+            default -> rankingService.top(date, limit);
+        };
     }
 
     @GetMapping("/{productId}")
     public Long rank(
             @PathVariable Long productId,
-            @RequestParam @DateTimeFormat(pattern = "yyyyMMdd") LocalDate date
+            @RequestParam @DateTimeFormat(pattern = "yyyyMMdd") LocalDate date,
+            @RequestParam(defaultValue = "daily") String period
     ) {
+        if ("daily".equals(period)) {
+            return rankingService.rank(date, productId);
+        }
         return rankingService.rank(date, productId);
     }
 }
