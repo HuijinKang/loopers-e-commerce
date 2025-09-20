@@ -58,6 +58,13 @@ feign:
         connect-timeout: 1000
         read-timeout: 3000
 
+ranking:
+  weight-view: 0.1
+  weight-like: 0.2
+  weight-order: 0.7
+  carry-over-weight: 0.1
+  ttl-seconds: 172800 # 2 days
+
 ---
 spring:
   config:

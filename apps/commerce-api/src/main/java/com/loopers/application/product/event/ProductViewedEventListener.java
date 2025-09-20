@@ -1,24 +1,21 @@
-package com.loopers.application.like.event;
+package com.loopers.application.product.event;
 
+import com.loopers.application.ranking.RankingService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
-import com.loopers.application.ranking.RankingService;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
-public class ProductLikedEventListener {
+public class ProductViewedEventListener {
 
     private final RankingService rankingService;
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handle(ProductLikedEvent event) {
-        log.info("ProductLikedEvent handled: productId={}, userId={}, liked={}", event.productId(), event.userId(), event.liked());
-        rankingService.onLikeChanged(event.productId(), event.liked());
+    public void handle(ProductViewedEvent event) {
+        rankingService.onView(event.productId());
     }
 }
